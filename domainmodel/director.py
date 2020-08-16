@@ -1,4 +1,3 @@
-
 class Director:
 
     def __init__(self, director_full_name: str):
@@ -14,26 +13,15 @@ class Director:
     def __repr__(self):
         return f"<Director {self.__director_full_name}>"
 
-    def __eq__(self, other):
+    def __eq__(self, other: 'Director'):
         if type(self) == type(other) and self.director_full_name == other.director_full_name:
             return True
         return False
 
-    def __lt__(self, other):
+    def __lt__(self, other: 'Director'):
         if type(self) == type(other) and self.director_full_name < other.director_full_name:
             return True
         return False
 
     def __hash__(self):
         return hash(self.director_full_name)
-
-
-class TestDirectorMethods:
-
-    def test_init(self):
-        director1 = Director("Taika Waititi")
-        assert repr(director1) == "<Director Taika Waititi>"
-        director2 = Director("")
-        assert director2.director_full_name is None
-        director3 = Director(42)
-        assert director3.director_full_name is None
