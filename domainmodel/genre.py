@@ -11,7 +11,7 @@ class Genre:
         return self.__genre_name
 
     def __repr__(self) -> str:
-        return f"<Genre {self.__genre_name}>"
+        return f"<Genre {self.genre_name}>"
 
     def __eq__(self, other: 'Genre') -> bool:
         if type(self) == type(other) and self.genre_name == other.genre_name:

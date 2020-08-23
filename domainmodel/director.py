@@ -11,7 +11,7 @@ class Director:
         return self.__director_full_name
 
     def __repr__(self):
-        return f"<Director {self.__director_full_name}>"
+        return f"<Director {self.director_full_name}>"
 
     def __eq__(self, other: 'Director'):
         if type(self) == type(other) and self.director_full_name == other.director_full_name:
