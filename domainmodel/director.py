@@ -21,6 +21,8 @@ class Director:
     def __lt__(self, other: 'Director'):
         if type(self) == type(other) and self.director_full_name < other.director_full_name:
             return True
+        if type(self) != type(other):
+            raise TypeError(f"Cannot compare Director instance with {type(other)}")
         return False
 
     def __hash__(self):

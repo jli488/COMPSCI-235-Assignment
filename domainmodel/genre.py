@@ -21,6 +21,8 @@ class Genre:
     def __lt__(self, other: 'Genre') -> bool:
         if type(self) == type(other) and self.genre_name < other.genre_name:
             return True
+        if type(self) != type(other):
+            raise TypeError(f"Cannot compare Genre instance with {type(other)}")
         return False
 
     def __hash__(self):

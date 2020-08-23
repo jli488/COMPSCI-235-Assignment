@@ -1,3 +1,5 @@
+import pytest
+
 from domainmodel.genre import Genre
 
 
@@ -23,12 +25,22 @@ def test_equal():
     genre4 = Genre("Horror2")
     assert genre3 != genre4
     assert genre_none1 != genre4
+    genre5 = Genre("Horror3")
+    genre6 = "Horror3"
+    assert genre5 != genre6
 
 
 def test_lt():
     genre1 = Genre("Genre A")
     genre2 = Genre("Genre B")
     assert genre1 < genre2
+
+
+def test_type_mismatch():
+    genre = Genre("Genre")
+    other = "Genre"
+    with pytest.raises(TypeError):
+        return genre < other
 
 
 def test_hash():
