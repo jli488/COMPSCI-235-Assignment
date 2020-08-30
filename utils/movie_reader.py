@@ -31,11 +31,11 @@ class MovieFileCSVReader(object):
     def dataset_of_genres(self) -> List[Genre]:
         return list(self._dataset_of_genres)
 
-    def _read_field(self, record: dict, key: str, sep: str) -> str:
+    def _read_field(self, record: dict, key: str, sep: str) -> List[str]:
         str_objects = record.get(key)
         if str_objects:
-            for str_obj in str_objects.split(sep):
-                yield str_obj.strip()
+            return str_objects.split(sep)
+        return []
 
     def read_csv_file(self):
         with open(self._data_path, mode='r', encoding='utf-8-sig') as f:
