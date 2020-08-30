@@ -42,7 +42,7 @@ class User:
         if type(other) == User:
             return self.user_name < other.user_name
         else:
-            raise ValueError(f'Cannot compare User type with {type(other)}')
+            raise TypeError(f'Cannot compare User type with {type(other)}')
 
     def __hash__(self):
         return hash(self.user_name)

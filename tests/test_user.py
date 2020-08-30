@@ -23,5 +23,5 @@ def test_lt():
     user1 = User('a', 'pw123452')
     user2 = User('b', 'pw123451')
     assert user1 < user2
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         _ = user1 < 'c'
