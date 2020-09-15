@@ -22,6 +22,34 @@ class Movie:
         self._genres = list()
         self._runtime_minutes = 0
 
+    def __repr__(self):
+        return f"<Movie {self.title}, {self.year}>"
+
+    def __eq__(self, other: 'Movie') -> bool:
+        if type(self) == type(other) and \
+                self.title == other.title and \
+                self.year == other.year:
+            return True
+        return False
+
+    def __lt__(self, other: 'Movie') -> bool:
+        if type(self) != type(other):
+            raise TypeError(f"Cannot compare Movie instance with {type(other)}")
+        else:
+            if self.title < other.title:
+                return True
+            elif self.title > other.title:
+                return False
+            else:
+                return self.year < other.year
+
+    def __hash__(self) -> int:
+        return hash((self.title, self.year))
+
+    @property
+    def id(self) -> str:
+        return self.title + str(self.year)
+
     @property
     def title(self) -> str:
         return self._title
@@ -90,30 +118,6 @@ class Movie:
             self._runtime_minutes = runtime_minutes
         else:
             raise ValueError("runtime_minutes should be positive")
-
-    def __repr__(self):
-        return f"<Movie {self.title}, {self.year}>"
-
-    def __eq__(self, other: 'Movie') -> bool:
-        if type(self) == type(other) and \
-                self.title == other.title and \
-                self.year == other.year:
-            return True
-        return False
-
-    def __lt__(self, other: 'Movie') -> bool:
-        if type(self) != type(other):
-            raise TypeError(f"Cannot compare Movie instance with {type(other)}")
-        else:
-            if self.title < other.title:
-                return True
-            elif self.title > other.title:
-                return False
-            else:
-                return self.year < other.year
-
-    def __hash__(self) -> int:
-        return hash((self.title, self.year))
 
     def add_actor(self, actor: Actor):
         if type(actor) is Actor:
