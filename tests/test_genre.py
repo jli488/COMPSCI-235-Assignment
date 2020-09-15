@@ -1,6 +1,6 @@
 import pytest
 
-from domainmodel.genre import Genre
+from movie.domainmodel.genre import Genre
 
 
 def test_init():

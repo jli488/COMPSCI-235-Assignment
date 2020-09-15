@@ -1,10 +1,10 @@
 import csv
 from typing import List
 
-from domainmodel.actor import Actor
-from domainmodel.director import Director
-from domainmodel.genre import Genre
-from domainmodel.movie import Movie
+from movie.domainmodel.actor import Actor
+from movie.domainmodel.director import Director
+from movie.domainmodel.genre import Genre
+from movie.domainmodel.movie import Movie
 
 
 class MovieFileCSVReader(object):

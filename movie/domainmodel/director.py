@@ -1,4 +1,4 @@
-from domainmodel.person import Person
+from movie.domainmodel.person import Person
 
 
 class Director(Person):

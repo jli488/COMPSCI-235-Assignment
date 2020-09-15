@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from domainmodel.review import Review
-from domainmodel.movie import Movie
+from movie.domainmodel.review import Review
+from movie.domainmodel.movie import Movie
 
 
 @pytest.fixture

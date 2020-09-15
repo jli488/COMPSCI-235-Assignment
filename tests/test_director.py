@@ -1,6 +1,6 @@
 import pytest
 
-from domainmodel.director import Director
+from movie.domainmodel.director import Director
 
 
 def test_init():

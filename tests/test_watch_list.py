@@ -1,7 +1,7 @@
 import pytest
 
-from domainmodel.movie import Movie
-from domainmodel.watch_list import WatchList
+from movie.domainmodel.movie import Movie
+from movie.domainmodel.watch_list import WatchList
 
 
 @pytest.fixture

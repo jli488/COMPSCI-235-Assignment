@@ -1,8 +1,8 @@
 from typing import List
 
-from domainmodel.genre import Genre
-from domainmodel.actor import Actor
-from domainmodel.director import Director
+from movie.domainmodel.genre import Genre
+from movie.domainmodel.actor import Actor
+from movie.domainmodel.director import Director
 
 
 class Movie:
