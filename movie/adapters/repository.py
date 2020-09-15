@@ -1,6 +1,6 @@
 import abc
 
-from 
+from movie.domainmodel.movie import Movie
 
 
 class RepositoryException(Exception):
@@ -10,4 +10,26 @@ class RepositoryException(Exception):
 
 class AbstractRepository(abc.ABC):
     @abc.abstractmethod
-    def add_movie(self, movie: Movie):
+    def add_movie(self, movie: Movie) -> None:
+        """" Adds a Movie to the repository. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_movie(self, title: str, year: int) -> Movie:
+        """ Get a Movie from the repository. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_number_of_movies(self) -> int:
+        """ Get the total number of Movies in the repo. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_first_movie(self) -> Movie:
+        """ Get the first Movie in the repo. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_last_movie(self) -> Movie:
+        """ Get the last Movie in the repo. """
+        raise NotImplementedError
