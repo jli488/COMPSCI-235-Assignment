@@ -27,7 +27,7 @@ class Movie:
 
     def __eq__(self, other: 'Movie') -> bool:
         if type(self) == type(other) and \
-                self.title == other.title and \
+                self.title.lower() == other.title.lower() and \
                 self.year == other.year:
             return True
         return False
@@ -48,7 +48,7 @@ class Movie:
 
     @property
     def id(self) -> str:
-        return self.title + str(self.year)
+        return self.title.lower() + str(self.year)
 
     @property
     def title(self) -> str:
