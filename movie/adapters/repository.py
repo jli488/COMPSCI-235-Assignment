@@ -3,6 +3,9 @@ import abc
 from movie.domainmodel.movie import Movie
 
 
+repo_instance = None
+
+
 class RepositoryException(Exception):
     def __init__(self, message=None):
         super().__init__(message)
