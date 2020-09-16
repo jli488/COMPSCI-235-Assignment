@@ -8,7 +8,7 @@ movie_blueprint = Blueprint('movie_bp', __name__)
 
 @movie_blueprint.route('/movies')
 def movies():
-    movies_per_page = 10
+    movies_per_page = 5
     offset = int(request.args.get('offset', 0))
     movies = services.get_n_articles(movies_per_page, offset, repo.repo_instance)
     total_movies = services.get_article_num(repo.repo_instance)
@@ -23,7 +23,12 @@ def movies():
         first_url = url_for('movie_bp.movies')
     if offset * movies_per_page + len(movies) < total_movies:
         next_url = url_for('movie_bp.movies', offset=offset + 1)
-        last_url = url_for('movie_bp.movies', offset=total_movies // movies_per_page)
+
+        if total_movies % movies_per_page == 0:
+            last_page = total_movies // movies_per_page - 1
+        else:
+            last_page = total_movies // movies_per_page
+        last_url = url_for('movie_bp.movies', offset=last_page)
 
     return render_template(
         'movie/movie.html',

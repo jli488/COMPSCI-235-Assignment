@@ -22,4 +22,7 @@ def create_app(test_config: dict = None):
         from .home import home
         app.register_blueprint(home.home_blueprint)
 
+        from .movie import movie
+        app.register_blueprint(movie.movie_blueprint)
+
     return app
