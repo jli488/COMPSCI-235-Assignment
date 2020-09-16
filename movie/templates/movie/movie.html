@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <header id="article-header">
+        <h1>{{ title }}</h1>
+    </header>
+
+    <nav class="movie_nav">
+        <div style="float: left">
+            {% if first_url is not none %}
+                <button class="btn-general" onclick="location.href='{{ first_url }}'">First</button>
+            {% else %}
+                <button class="btn-general-disable" disabled>First</button>
+            {% endif %}
+            {% if prev_url is not none %}
+                <button class="btn-general" onclick="location.href='{{ prev_url }}'">Previous</button>
+            {% else %}
+                <button class="btn-general-disable" disabled>Previous</button>
+            {% endif %}
+        </div>
+        <div style="float: right">
+            {% if next_url is not none %}
+                <button class="btn-general" onclick="location.href='{{ next_url }}'">Next</button>
+            {% else %}
+                <button class="btn-general-disable" disabled>Next</button>
+            {% endif %}
+            {% if last_url is not none %}
+                <button class="btn-general" onclick="location.href='{{ last_url }}'">Last</button>
+            {% else %}
+                <button class="btn-general-disable" disabled>Last</button>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="movie_list">
+        {% for movie in movies %}
+            <p>{{ movie.title }}</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}
