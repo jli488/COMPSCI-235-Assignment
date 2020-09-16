@@ -1,0 +1,14 @@
+#logo {
+    width: 100px;
+    height: 100px;
+}
+
+.movie_nav {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+
+.movie_list {
+    float: left;
+}

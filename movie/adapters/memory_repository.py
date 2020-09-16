@@ -1,4 +1,5 @@
 from bisect import insort_left
+from typing import List
 
 from movie.adapters.repository import AbstractRepository
 from movie.domainmodel.movie import Movie
@@ -15,6 +16,9 @@ class MemoryRepository(AbstractRepository):
             return
         insort_left(self._movies, movie)
         self._movies_index[movie.id] = movie
+
+    def get_n_movies(self, n: int, offset: int) -> List[Movie]:
+        return self._movies[n * offset: n * (offset + 1)]
 
     def get_movie(self, title: str, year: int) -> Movie:
         return next((movie for movie in self._movies

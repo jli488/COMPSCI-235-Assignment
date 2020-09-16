@@ -1,9 +1,10 @@
 import abc
+from typing import List
 
 from movie.domainmodel.movie import Movie
 
 
-repo_instance = None
+repo_instance: 'AbstractRepository' = None
 
 
 class RepositoryException(Exception):
@@ -15,6 +16,11 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def add_movie(self, movie: Movie) -> None:
         """" Adds a Movie to the repository. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_n_movies(self, n: int, offset: int) -> List[Movie]:
+        """ Get next n Movies from the repository starts from offset. """
         raise NotImplementedError
 
     @abc.abstractmethod
