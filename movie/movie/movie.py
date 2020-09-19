@@ -11,7 +11,7 @@ def movies():
     movies_per_page = 5
     offset = int(request.args.get('offset', 0))
     movies = services.get_n_articles(movies_per_page, offset, repo.repo_instance)
-    total_movies = services.get_article_num(repo.repo_instance)
+    total_movies = services.get_movie_num(repo.repo_instance)
 
     prev_url = None
     first_url = None
