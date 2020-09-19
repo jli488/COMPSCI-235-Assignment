@@ -9,4 +9,4 @@ def get_n_articles(n: int, offset: int, repo: AbstractRepository) -> List[Movie]
 
 
 def get_article_num(repo: AbstractRepository) -> int:
-    return repo.get_number_of_movies()
+    return repo.get_total_number_of_movies()

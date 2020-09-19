@@ -17,16 +17,16 @@ class MemoryRepository(AbstractRepository):
         insort_left(self._movies, movie)
         self._movies_index[movie.id] = movie
 
-    def get_n_movies(self, n: int, offset: int) -> List[Movie]:
-        return self._movies[n * offset: n * (offset + 1)]
-
     def get_movie(self, title: str, year: int) -> Movie:
         return next((movie for movie in self._movies
                      if movie.title.lower() == title.lower()
                      and movie.year == year),
                     None)
 
-    def get_number_of_movies(self) -> int:
+    def get_n_movies(self, n: int, offset: int = 0) -> List[Movie]:
+        return self._movies[n * offset: n * (offset + 1)]
+
+    def get_total_number_of_movies(self) -> int:
         return len(self._movies)
 
     def get_first_movie(self) -> Movie:
@@ -41,6 +41,12 @@ class MemoryRepository(AbstractRepository):
         except IndexError:
             movie = None
         return movie
+
+    def delete_movie(self, movie_to_delete: Movie) -> bool:
+        if movie_to_delete in self._movies:
+            self._movies.remove(movie_to_delete)
+            return True
+        return False
 
 
 def populate(data_path: str, repo: MemoryRepository) -> None:

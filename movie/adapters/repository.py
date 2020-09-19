@@ -19,17 +19,17 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_n_movies(self, n: int, offset: int) -> List[Movie]:
-        """ Get next n Movies from the repository starts from offset. """
-        raise NotImplementedError
-
-    @abc.abstractmethod
     def get_movie(self, title: str, year: int) -> Movie:
         """ Get a Movie from the repository. """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_number_of_movies(self) -> int:
+    def get_n_movies(self, n: int, offset: int) -> List[Movie]:
+        """ Get next n Movies from the repository starts from offset. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_total_number_of_movies(self) -> int:
         """ Get the total number of Movies in the repo. """
         raise NotImplementedError
 
@@ -41,4 +41,9 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def get_last_movie(self) -> Movie:
         """ Get the last Movie in the repo. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_movie(self, movie_to_delete: Movie) -> bool:
+        """ Delete movie from the repo. """
         raise NotImplementedError
