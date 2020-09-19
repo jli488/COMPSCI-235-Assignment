@@ -1,1 +1,4 @@
-pytest
+Flask==1.1.2
+Jinja2==2.11.2
+pytest==6.0.2
+python-dotenv==0.14.0
