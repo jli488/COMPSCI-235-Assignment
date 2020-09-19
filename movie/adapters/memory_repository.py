@@ -11,11 +11,12 @@ class MemoryRepository(AbstractRepository):
         self._movies = list()
         self._movies_index = dict()
 
-    def add_movie(self, movie: Movie) -> None:
+    def add_movie(self, movie: Movie) -> bool:
         if movie in self._movies:
-            return
+            return False
         insort_left(self._movies, movie)
         self._movies_index[movie.id] = movie
+        return True
 
     def get_movie(self, title: str, year: int) -> Movie:
         return next((movie for movie in self._movies

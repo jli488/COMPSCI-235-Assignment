@@ -10,10 +10,9 @@
         />
     </head>
 <body>
-    <div id="body">
-        {% include 'navigation.html' %}
-
-        <div id="content">
+<div id="body">
+    {% include 'side_bar.html' %}
+    <div id="content">
             {% include 'header.html' %}
             <div id="container">
                 {% block content %} {% endblock %}
