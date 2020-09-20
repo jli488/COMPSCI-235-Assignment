@@ -2,11 +2,12 @@ from flask import Blueprint, request, render_template, url_for
 
 from movie.movie import services
 import movie.adapters.repository as repo
+from movie.utils.constants import MOVIE_BP, LIST_MOVIE_ENDPOINT
 
-movie_blueprint = Blueprint('movie_bp', __name__)
+movie_blueprint = Blueprint(MOVIE_BP, __name__)
 
 
-@movie_blueprint.route('/movies')
+@movie_blueprint.route('/' + LIST_MOVIE_ENDPOINT)
 def movies():
     movies_per_page = 5
     offset = int(request.args.get('offset', 0))
@@ -19,16 +20,16 @@ def movies():
     last_url = None
 
     if offset > 0:
-        prev_url = url_for('movie_bp.movies', offset=offset - 1)
-        first_url = url_for('movie_bp.movies')
+        prev_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=offset - 1)
+        first_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT)
     if offset * movies_per_page + len(movies) < total_movies:
-        next_url = url_for('movie_bp.movies', offset=offset + 1)
+        next_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=offset + 1)
 
         if total_movies % movies_per_page == 0:
             last_page = total_movies // movies_per_page - 1
         else:
             last_page = total_movies // movies_per_page
-        last_url = url_for('movie_bp.movies', offset=last_page)
+        last_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=last_page)
 
     return render_template(
         'movie/movie.html',
