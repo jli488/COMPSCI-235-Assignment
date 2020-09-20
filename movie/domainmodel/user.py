@@ -3,8 +3,8 @@ from movie.domainmodel.review import Review
 
 
 class User:
-    def __init__(self, user_name:str, password: str):
-        self._user_name = user_name.strip().lower()
+    def __init__(self, username:str, password: str):
+        self._user_name = username.strip().lower()
         self._password = password
         self._watched_movies = list()
         self._review_list = list()

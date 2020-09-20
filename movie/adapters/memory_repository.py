@@ -12,7 +12,7 @@ class MemoryRepository(AbstractRepository):
         self._movies = list()
         self._movies_index = dict()
 
-        self._users = dict()
+        self._users = list()
 
     def add_movie(self, movie: Movie) -> bool:
         if movie in self._movies:
@@ -52,11 +52,13 @@ class MemoryRepository(AbstractRepository):
             return True
         return False
 
-    def add_user(self, user: User) -> bool:
-        if user in self._users:
-            return False
-        self._users[user.username] = user
-        return True
+    def add_user(self, user: User) -> None:
+        self._users.append(user)
+
+    def get_user(self, username: str) -> User:
+        return next((user for user in self._users
+                     if user.username == username),
+                    None)
 
 
 def populate(data_path: str, repo: MemoryRepository) -> None:

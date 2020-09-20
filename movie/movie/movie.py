@@ -33,7 +33,7 @@ def movies():
 
     return render_template(
         'movie/movie.html',
-        title='Movies',
+        title='Movie List',
         movies=movies,
         first_url=first_url,
         last_url=last_url,

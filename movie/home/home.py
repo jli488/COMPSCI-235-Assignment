@@ -8,5 +8,6 @@ home_blueprint = Blueprint(HOME_BP, __name__)
 @home_blueprint.route('/', methods=['GET'])
 def home():
     return render_template(
-        'home/home.html'
+        'home/home.html',
+        title='Movie Home'
     )

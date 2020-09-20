@@ -49,6 +49,11 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_user(self, user: User) -> bool:
+    def add_user(self, user: User) -> None:
         """ Add new user to the repo """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_user(self, username: str) -> User:
+        """ Get existing user from the repo """
         raise NotImplementedError
