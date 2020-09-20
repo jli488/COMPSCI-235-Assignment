@@ -5,7 +5,7 @@ from movie.domainmodel.user import User
 
 def test_init():
     user = User('Martin', 'pw12345')
-    assert user.user_name == 'martin'
+    assert user.username == 'martin'
     assert user.password == 'pw12345'
 
 

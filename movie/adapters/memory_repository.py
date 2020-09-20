@@ -3,6 +3,7 @@ from typing import List
 
 from movie.adapters.repository import AbstractRepository
 from movie.domainmodel.movie import Movie
+from movie.domainmodel.user import User
 from movie.utils.movie_reader import MovieFileCSVReader
 
 
@@ -10,6 +11,8 @@ class MemoryRepository(AbstractRepository):
     def __init__(self):
         self._movies = list()
         self._movies_index = dict()
+
+        self._users = dict()
 
     def add_movie(self, movie: Movie) -> bool:
         if movie in self._movies:
@@ -48,6 +51,12 @@ class MemoryRepository(AbstractRepository):
             self._movies.remove(movie_to_delete)
             return True
         return False
+
+    def add_user(self, user: User) -> bool:
+        if user in self._users:
+            return False
+        self._users[user.username] = user
+        return True
 
 
 def populate(data_path: str, repo: MemoryRepository) -> None:

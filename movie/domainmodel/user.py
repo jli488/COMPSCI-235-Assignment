@@ -11,7 +11,7 @@ class User:
         self._time_spent_watching_movies_minutes = 0
 
     @property
-    def user_name(self):
+    def username(self):
         return self._user_name
 
     @property
@@ -31,21 +31,21 @@ class User:
         return self._time_spent_watching_movies_minutes
 
     def __repr__(self) -> str:
-        return f"<User {self.user_name}>"
+        return f"<User {self.username}>"
 
     def __eq__(self, other: 'User') -> bool:
         if type(other) == User:
-            return self.user_name == other.user_name
+            return self.username == other.username
         return False
 
     def __lt__(self, other: 'User'):
         if type(other) == User:
-            return self.user_name < other.user_name
+            return self.username < other.username
         else:
             raise TypeError(f'Cannot compare User type with {type(other)}')
 
     def __hash__(self):
-        return hash(self.user_name)
+        return hash(self.username)
 
     def watch_movie(self, movie: Movie):
         if movie not in self.watched_movies:

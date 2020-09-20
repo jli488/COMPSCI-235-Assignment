@@ -2,7 +2,7 @@ import abc
 from typing import List
 
 from movie.domainmodel.movie import Movie
-
+from movie.domainmodel.user import User
 
 repo_instance: 'AbstractRepository' = None
 
@@ -46,4 +46,9 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def delete_movie(self, movie_to_delete: Movie) -> bool:
         """ Delete movie from the repo. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_user(self, user: User) -> bool:
+        """ Add new user to the repo """
         raise NotImplementedError
