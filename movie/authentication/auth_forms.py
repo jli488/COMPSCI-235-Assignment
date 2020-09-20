@@ -8,9 +8,9 @@ class PasswordValid:
     def __init__(self, message: str = None):
         if not message:
             message = u'Password requirements:\n' \
-                      u'1. Contains at least 8 characters\n' \
-                      u'2. Contains at least an upper case letter\n' \
-                      u'3. Contains at least a lower case letter and a digit'
+                      u'Contains at test least 8 characters\n' \
+                      u'Contains at test least an upper case letter\n' \
+                      u'Contains at test least a lower case letter and a digit'
         self.message = message
 
     def __call__(self, form: FlaskForm, field: Field):

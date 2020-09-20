@@ -55,3 +55,9 @@ class User:
     def add_review(self, review: Review):
         if review not in self.reviews:
             self._review_list.append(review)
+
+    def to_dict(self):
+        return {
+            'username': self.username,
+            'password': self.password
+        }
