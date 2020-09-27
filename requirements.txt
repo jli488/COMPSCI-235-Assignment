@@ -5,3 +5,5 @@ password-validator==1.0
 pytest==6.0.2
 python-dotenv==0.14.0
 Werkzeug==0.16.0
+editdistance==0.5.3
+WTForms==2.3.3
