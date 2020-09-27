@@ -1,13 +1,12 @@
 from typing import Tuple, List
 
-from flask import Blueprint, request, render_template, url_for, make_response
-from flask_wtf import FlaskForm
+from flask import Blueprint, request, render_template, url_for
 
+import movie.adapters.repository as repo
 from movie.domainmodel.movie import Movie
 from movie.movie import services
-import movie.adapters.repository as repo
 from movie.movie.search_forms import MovieSearchForm
-from movie.utils.constants import MOVIE_BP, LIST_MOVIE_ENDPOINT, SEARCH_MOVIE_ENDPOINT
+from movie.utils.constants import MOVIE_BP, LIST_MOVIE_ENDPOINT
 
 movie_blueprint = Blueprint(MOVIE_BP, __name__)
 
@@ -19,10 +18,11 @@ def movies():
 
     search_by = request.args.get('search_by', None)
     search_key = request.args.get('search_key', None)
+    clear_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT)
 
     if form.validate_on_submit() or (search_by and search_key):
-        movies, first_url, prev_url, next_url, last_url = parse_movie_search_request(movies_per_page, request, form,
-                                                                                     search_by, search_key)
+        movies, first_url, prev_url, next_url, last_url = parse_movie_search_request(
+            movies_per_page, request, form, search_by, search_key)
     else:
         movies, first_url, prev_url, next_url, last_url = parse_movie_list_request(movies_per_page, request)
 
@@ -31,6 +31,7 @@ def movies():
         form=form,
         title='Movie List',
         movies=movies,
+        clear_url=clear_url,
         first_url=first_url,
         last_url=last_url,
         prev_url=prev_url,
@@ -101,5 +102,8 @@ def parse_movie_search_request(movies_per_page: int, request: request, form: Mov
             last_page = total_movies // movies_per_page
         last_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=last_page * movies_per_page,
                            search_by=search_by, search_key=search_key)
+
+    form.search_by.data = search_by
+    form.search_text.data = search_key
 
     return movies, first_url, prev_url, next_url, last_url
