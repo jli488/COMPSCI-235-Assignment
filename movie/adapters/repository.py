@@ -1,5 +1,5 @@
 import abc
-from typing import List
+from typing import List, Generator
 
 from movie.domainmodel.movie import Movie
 from movie.domainmodel.user import User
@@ -13,6 +13,18 @@ class RepositoryException(Exception):
 
 
 class AbstractRepository(abc.ABC):
+    @property
+    @abc.abstractmethod
+    def movies(self) -> Generator[Movie, None, None]:
+        """" Access moies. """
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def users(self) -> Generator[User, None, None]:
+        """" Access users. """
+        raise NotImplementedError
+
     @abc.abstractmethod
     def add_movie(self, movie: Movie) -> None:
         """" Adds a Movie to the repository. """
@@ -41,6 +53,21 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def get_last_movie(self) -> Movie:
         """ Get the last Movie in the repo. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_movies_by_actor(self, actor: str) -> Generator[Movie, None, None]:
+        """ Search the repo based on actor. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_movies_by_director(self, director: str) -> Generator[Movie, None, None]:
+        """ Search the repo based on director. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_movies_by_genre(self, genre: str) -> Generator[Movie, None, None]:
+        """ Search the repo based on genre. """
         raise NotImplementedError
 
     @abc.abstractmethod

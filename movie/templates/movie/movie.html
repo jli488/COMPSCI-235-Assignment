@@ -5,6 +5,20 @@
         <h1>{{ title }}</h1>
     </header>
 
+    <div id="movie-search-formwrapper" class="formwrapper">
+        <h1 id="movie-search-title" class="title">{{ title }}</h1>
+        <form method="POST" action="{{ url_for('movie_bp.movies') }}">
+            {{ form.csrf_token }}
+            <div id="search-criteria-field" class="form-field">
+                {{ form.search_by.label }} {{ form.search_by }}
+            </div>
+            <div id="search-text-field" class="form-field">
+                {{ form.search_text.label }} {{ form.search_text }}
+            </div>
+            {{ form.submit }}
+        </form>
+    </div>
+
     <nav class="movie_nav">
         <div style="float: left">
             {% if first_url is not none %}

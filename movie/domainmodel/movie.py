@@ -87,7 +87,7 @@ class Movie:
             self._director = director
 
     @property
-    def actors(self) -> List:
+    def actors(self) -> List[Actor]:
         return self._actors
 
     @actors.setter
@@ -98,7 +98,7 @@ class Movie:
         self._actors = actors
 
     @property
-    def genres(self) -> List:
+    def genres(self) -> List[Genre]:
         return self._genres
 
     @genres.setter
@@ -136,3 +136,6 @@ class Movie:
         for genre_to_remove in self._genres:
             if genre_to_remove == genre:
                 self._genres.remove(genre_to_remove)
+
+    def set_director(self, director: Director):
+        self._director = director

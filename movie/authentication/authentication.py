@@ -24,9 +24,6 @@ def register():
         except services.DuplicatedUsernameException as e:
             username_error_msg = 'Username is not unique, please try another one'
 
-    for error in form.password.errors:
-        print(error)
-
     return render_template(
         'credentials.html',
         title='Movie Register',

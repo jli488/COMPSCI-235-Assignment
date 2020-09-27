@@ -42,13 +42,23 @@ class MovieFileCSVReader(object):
             records = csv.DictReader(f)
             for record in records:
                 movie = Movie(record.get('Title'), int(record.get('Year', 0)))
-                self._dataset_of_movies.add(movie)
 
                 for actor in self._read_field(record, 'Actors', ','):
-                    self._dataset_of_actors.add(Actor(actor))
+                    actor = Actor(actor)
+                    movie.add_actor(actor)
+                    self._dataset_of_actors.add(actor)
 
                 for genre in self._read_field(record, 'Genre', ','):
-                    self._dataset_of_genres.add(Genre(genre))
+                    genre = Genre(genre)
+                    movie.add_genre(genre)
+                    self._dataset_of_genres.add(genre)
 
                 for director in self._read_field(record, 'Director', ','):
-                    self._dataset_of_directors.add(Director(director))
+                    director = Director(director)
+                    movie.set_director(director)
+                    self._dataset_of_directors.add(director)
+
+                movie.description = record.get('Description')
+                movie.runtime_minutes = int(record.get('Runtime (Minutes)'))
+
+                self._dataset_of_movies.add(movie)

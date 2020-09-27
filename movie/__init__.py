@@ -19,7 +19,6 @@ def create_app(test_config: dict = None):
 
     repo.repo_instance = MemoryRepository()
     populate_movies(movie_data_path, repo.repo_instance)
-    print("runned")
     populate_users(users_data_path, repo.repo_instance)
 
     with app.app_context():
