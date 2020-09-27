@@ -47,7 +47,7 @@ def test_repository_get_more_than_n_movies(memory_repo):
 def test_repository_get_n_movies_with_offset(memory_repo):
     movie_3 = Movie("Movie3", 2002)
     movie_4 = Movie("Movie4", 2003)
-    movies = memory_repo.get_n_movies(2, 1)
+    movies = memory_repo.get_n_movies(2, 2)
     assert len(movies) == 2
     assert movie_3 in movies
     assert movie_4 in movies
@@ -74,7 +74,6 @@ def test_delete_not_exist_movie(memory_repo):
 def test_csv_user_reader(memory_repo):
     reader = UserFileCSVReader('datafiles/RegisteredUsers.csv')
     users = reader.dataset_of_users
-    assert len(users) == 1
-    assert users[0].username == 'jiakai'
-
-    services.authenticate_user(users[0].username, 'LIjiakai123', memory_repo)
+    assert len(users) == 2
+    assert users[0].username == 'test_user_001'
+    assert users[1].username == 'test_user_002'

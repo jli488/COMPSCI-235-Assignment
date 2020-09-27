@@ -7,7 +7,7 @@ from movie.authentication.authentication import login_required
 from movie.domainmodel.movie import Movie
 from movie.movie import services
 from movie.movie.search_forms import MovieSearchForm
-from movie.utils.constants import MOVIE_BP, LIST_MOVIE_ENDPOINT
+from movie.utils.constants import MOVIE_BP, LIST_MOVIE_ENDPOINT, MOVIE_DETAILS_ENDPOINT
 
 movie_blueprint = Blueprint(MOVIE_BP, __name__)
 
@@ -112,3 +112,8 @@ def parse_movie_search_request(movies_per_page: int, request: request, form: Mov
     form.search_text.data = search_key
 
     return movies, first_url, prev_url, next_url, last_url
+
+
+@movie_blueprint.route('/' + MOVIE_DETAILS_ENDPOINT, methods=['GET', 'POST'])
+def movie_info():
+    pass

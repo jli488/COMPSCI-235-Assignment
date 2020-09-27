@@ -31,7 +31,7 @@ def get_user(username: str, repo: AbstractRepository) -> dict:
     return user.to_dict()
 
 
-def authenticate_user(username: str, password: str, repo: AbstractRepository) -> bool:
+def authenticate_user(username: str, password: str, repo: AbstractRepository) -> None:
     authenticated = False
     user = repo.get_user(username)
     if user:

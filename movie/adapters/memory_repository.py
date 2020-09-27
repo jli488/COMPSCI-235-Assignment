@@ -56,27 +56,30 @@ class MemoryRepository(AbstractRepository):
         self._movies_index[movie.id] = movie
 
     def _update_actor_index(self, movie: Movie):
-        for actor in movie.actors:
-            movie_ids = self._actors_index.get(actor.actor_full_name, [])
-            movie_ids.append(movie.id)
-            self._actors_index.update({
-                actor.actor_full_name: movie_ids
-            })
+        if movie.actors:
+            for actor in movie.actors:
+                movie_ids = self._actors_index.get(actor.actor_full_name, [])
+                movie_ids.append(movie.id)
+                self._actors_index.update({
+                    actor.actor_full_name: movie_ids
+                })
 
     def _update_director_index(self, movie: Movie):
-        movie_ids = self._directors_index.get(movie.director.director_full_name, [])
-        movie_ids.append(movie.id)
-        self._directors_index.update({
-            movie.director.director_full_name: movie_ids
-        })
+        if movie.director:
+            movie_ids = self._directors_index.get(movie.director.director_full_name, [])
+            movie_ids.append(movie.id)
+            self._directors_index.update({
+                movie.director.director_full_name: movie_ids
+            })
 
     def _update_genre_index(self, movie: Movie):
-        for genre in movie.genres:
-            movie_ids = self._genres_index.get(genre.genre_name, [])
-            movie_ids.append(movie.id)
-            self._genres_index.update({
-                genre.genre_name: movie_ids
-            })
+        if movie.genres:
+            for genre in movie.genres:
+                movie_ids = self._genres_index.get(genre.genre_name, [])
+                movie_ids.append(movie.id)
+                self._genres_index.update({
+                    genre.genre_name: movie_ids
+                })
 
     def get_movie(self, title: str, year: int) -> Movie:
         return next((movie for movie in self._movies
