@@ -1,9 +1,8 @@
 from typing import Tuple, List
 
-from flask import Blueprint, request, render_template, url_for
+from flask import Blueprint, request, render_template, url_for, redirect
 
 import movie.adapters.repository as repo
-from movie.authentication.authentication import login_required
 from movie.domainmodel.movie import Movie
 from movie.movie import services
 from movie.movie.search_forms import MovieSearchForm
@@ -13,7 +12,6 @@ movie_blueprint = Blueprint(MOVIE_BP, __name__)
 
 
 @movie_blueprint.route('/' + LIST_MOVIE_ENDPOINT, methods=['GET', 'POST'])
-@login_required
 def movies():
     movies_per_page = 5
     form = MovieSearchForm()
@@ -116,4 +114,12 @@ def parse_movie_search_request(movies_per_page: int, request: request, form: Mov
 
 @movie_blueprint.route('/' + MOVIE_DETAILS_ENDPOINT, methods=['GET', 'POST'])
 def movie_info():
-    pass
+    movie_id = request.args.get('movie_id')
+    if not movie_id:
+        return redirect(url_for('home_bp.home'))
+
+    movie = repo.repo_instance.get_movie_by_id(movie_id)
+    return render_template(
+        'movie/movie_info.html',
+        movie=movie
+    )

@@ -87,6 +87,9 @@ class MemoryRepository(AbstractRepository):
                      and movie.year == year),
                     None)
 
+    def get_movie_by_id(self, movie_id: str) -> Movie:
+        return self._movies_index.get(movie_id)
+
     def get_n_movies(self, n: int, offset: int = 0) -> List[Movie]:
         return self._movies[offset: offset + n]
 
@@ -117,7 +120,7 @@ class MemoryRepository(AbstractRepository):
 
     def _get_movies_from_index(self, index: dict, lookup_key: str):
         movies_ids = index.get(lookup_key, [])
-        return (self._movies_index[movie_id] for movie_id in movies_ids)
+        return (self.get_movie_by_id(movie_id) for movie_id in movies_ids)
 
     def delete_movie(self, movie_to_delete: Movie) -> bool:
         if movie_to_delete in self._movies:

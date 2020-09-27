@@ -2,8 +2,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from movie.domainmodel.review import Review
-from movie.domainmodel.movie import Movie
+from movie.domainmodel.movie import Movie, Review
 
 
 @pytest.fixture

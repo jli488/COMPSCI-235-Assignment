@@ -31,4 +31,7 @@ def create_app(test_config: dict = None):
         from .authentication import authentication
         app.register_blueprint(authentication.auth_blueprint)
 
+        from .review import review
+        app.register_blueprint(review.review_blueprint)
+
     return app

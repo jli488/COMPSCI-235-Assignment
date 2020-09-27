@@ -13,3 +13,4 @@ LOGIN_ENDPOINT = 'login'
 LOGOUT_ENDPOINT = 'logout'
 
 REVIEW_BP = 'review_bp'
+REVIEW_ENDPOINT = 'review'

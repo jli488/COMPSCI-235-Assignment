@@ -1,8 +1,53 @@
+from datetime import datetime
 from typing import List
 
 from movie.domainmodel.genre import Genre
 from movie.domainmodel.actor import Actor
 from movie.domainmodel.director import Director
+
+
+class Review:
+    def __init__(self, movie: 'Movie', review_text: str, rating: int, timestamp: datetime = None):
+        self._movie = movie
+        self._review_text = review_text
+
+        if not timestamp:
+            timestamp = datetime.now()
+        self._timestamp = timestamp
+
+        if 0 < rating < 11:
+            self._rating = rating
+        else:
+            self._rating = None
+
+    @property
+    def movie(self) -> 'Movie':
+        return self._movie
+
+    @property
+    def review_text(self) -> str:
+        return self._review_text
+
+    @property
+    def timestamp(self) -> datetime:
+        return self._timestamp
+
+    @property
+    def rating(self) -> int:
+        return self._rating
+
+    def __repr__(self) -> str:
+        movie_str = repr(self._movie) + "\n"
+        review_str = f"Review: {self._review_text}.\nRating: {self._rating}"
+        return movie_str + review_str
+
+    def __eq__(self, other: 'Review') -> bool:
+        res = []
+        if type(other) == Review:
+            for attr_k in self.__dict__.keys():
+                res.append(self.__dict__[attr_k] == other.__dict__[attr_k])
+            return all(res)
+        return False
 
 
 class Movie:
@@ -20,6 +65,7 @@ class Movie:
         self._director = None
         self._actors = list()
         self._genres = list()
+        self._reviews = list()
         self._runtime_minutes = 0
 
     def __repr__(self):
@@ -109,6 +155,10 @@ class Movie:
         self._genres = genres
 
     @property
+    def reviews(self) -> List[Review]:
+        return self._reviews
+
+    @property
     def runtime_minutes(self) -> int:
         return self._runtime_minutes
 
@@ -136,6 +186,15 @@ class Movie:
         for genre_to_remove in self._genres:
             if genre_to_remove == genre:
                 self._genres.remove(genre_to_remove)
+
+    def add_review(self, review: Review):
+        if type(review) is Review:
+            self._reviews.append(review)
+
+    def remove_review(self, review: Review):
+        for review_to_remove in self._reviews:
+            if review_to_remove == review:
+                self._reviews.remove(review_to_remove)
 
     def set_director(self, director: Director):
         self._director = director

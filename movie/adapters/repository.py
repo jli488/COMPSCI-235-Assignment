@@ -54,6 +54,11 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_movie_by_id(self, movie_id: str) -> Movie:
+        """ Get movie by movie id. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_n_movies(self, n: int, offset: int) -> List[Movie]:
         """ Get next n Movies from the repository starts from offset. """
         raise NotImplementedError

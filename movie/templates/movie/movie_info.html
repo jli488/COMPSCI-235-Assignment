@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <main id="movie_info">
+        <h2>{{ movie.title }}</h2>
+        <a id="movie-review-btn" class="review-btn"
+           href="{{ url_for('review_bp.add_review', movie_id=movie.id) }}">Review</a>
+        {% if movie.director is not none %}
+            <p>Director: {{ movie.director.director_full_name }}</p>
+        {% endif %}
+        {% if movie.genres is not none %}
+            <p>Genres: </p>
+            <ul>
+                {% for genre in movie.genres %}
+                    <li>{{ genre.genre_name }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if movie.actors is not none %}
+            <p>Actors: </p>
+            <ul>
+                {% for actor in movie.actors %}
+                    <li>{{ actor.actor_full_name }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if movie.description is not none %}
+            <p>Description: </p>
+            <p>{{ movie.description }}</p>
+        {% endif %}
+        {% if movie.reviews|length > 0 %}
+            <p>Review: </p>
+            {% for review in movie.reviews %}
+                <p>{{ review.rating }}</p>
+                <p>{{ review.review_text }}</p>
+            {% endfor %}
+        {% endif %}
+    </main>
+{% endblock %}
