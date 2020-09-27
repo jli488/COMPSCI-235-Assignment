@@ -11,4 +11,5 @@ def home():
         'home/home.html',
         title='Movie Home',
         username=session.get('username', 'visitor'),
+        error_msg=None
     )
