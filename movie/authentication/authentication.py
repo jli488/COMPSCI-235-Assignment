@@ -1,11 +1,12 @@
+from functools import wraps
+
 from flask import Blueprint, render_template, url_for, redirect, session
 
+import movie.adapters.repository as repo
+from movie.adapters.memory_repository import save_users_to_disk
 from movie.authentication import services
 from movie.authentication.auth_forms import RegistrationForm, LoginForm
-from movie.utils.constants import AUTH_BP, REGISTER_ENDPOINT, LOGIN_ENDPOINT, HOME_BP
-import movie.adapters.repository as repo
-
-from movie.adapters.memory_repository import save_users_to_disk
+from movie.utils.constants import AUTH_BP, REGISTER_ENDPOINT, LOGIN_ENDPOINT, LOGOUT_ENDPOINT, HOME_BP
 
 auth_blueprint = Blueprint(AUTH_BP, __name__, url_prefix='/auth')
 
@@ -60,3 +61,19 @@ def login():
         username_error_msg=username_error_msg,
         password_error_msg=password_error_msg
     )
+
+
+@auth_blueprint.route('/' + LOGOUT_ENDPOINT)
+def logout():
+    session.clear()
+    return redirect(url_for('home_bp.home'))
+
+
+def login_required(view):
+    @wraps(view)
+    def wrapped_veiw(*args, **kwargs):
+        if 'username' not in session:
+            return redirect(url_for(AUTH_BP + '.' + LOGIN_ENDPOINT))
+        return view(*args, **kwargs)
+
+    return wrapped_veiw
