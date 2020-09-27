@@ -16,13 +16,31 @@ class AbstractRepository(abc.ABC):
     @property
     @abc.abstractmethod
     def movies(self) -> Generator[Movie, None, None]:
-        """" Access moies. """
+        """" Access movies. """
         raise NotImplementedError
 
     @property
     @abc.abstractmethod
     def users(self) -> Generator[User, None, None]:
         """" Access users. """
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def genres(self) -> Generator[str, None, None]:
+        """" Access genre names. """
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def actors(self) -> Generator[str, None, None]:
+        """" Access actor names. """
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def directors(self) -> Generator[str, None, None]:
+        """" Access director names. """
         raise NotImplementedError
 
     @abc.abstractmethod

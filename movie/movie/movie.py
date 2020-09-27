@@ -75,18 +75,21 @@ def parse_movie_search_request(movies_per_page: int, request: request, form: Mov
     next_url = None
     last_url = None
 
+    search_func_map = {
+        'Actor': services.get_n_movies_by_actor,
+        'Actor fuzzy': services.get_n_movies_by_actor_fuzzy,
+        'Director': services.get_n_movies_by_director,
+        'Director fuzzy': services.get_n_movies_by_director_fuzzy,
+        'Genre': services.get_n_movies_by_genre,
+        'Genre fuzzy': services.get_n_movies_by_genre_fuzzy
+    }
+
     offset = int(request.args.get('offset', 0))
     search_by = form.search_by.data or search_by
     search_key = form.search_text.data or search_key
-    if search_by == 'Actor':
-        movies, total_movies = services.get_n_movies_by_actor(offset, movies_per_page,
-                                                              repo.repo_instance, search_key)
-    if search_by == 'Director':
-        movies, total_movies = services.get_n_movies_by_director(offset, movies_per_page,
-                                                                 repo.repo_instance, search_key)
-    if search_by == 'Genre':
-        movies, total_movies = services.get_n_movies_by_genre(offset, movies_per_page,
-                                                              repo.repo_instance, search_key)
+
+    if search_by in search_func_map:
+        movies, total_movies = search_func_map[search_by](offset, movies_per_page, repo.repo_instance, search_key)
 
     if offset > 0:
         prev_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=offset - movies_per_page,

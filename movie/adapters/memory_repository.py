@@ -29,6 +29,18 @@ class MemoryRepository(AbstractRepository):
     def users(self) -> Generator[User, None, None]:
         return (user for user in self._users)
 
+    @property
+    def genres(self) -> Generator[str, None, None]:
+        return (genre for genre in self._genres_index)
+
+    @property
+    def actors(self) -> Generator[str, None, None]:
+        return (actor for actor in self._actors_index)
+
+    @property
+    def directors(self) -> Generator[str, None, None]:
+        return (direcotr for direcotr in self._directors_index)
+
     def add_movie(self, movie: Movie) -> bool:
         if movie in self._movies:
             return False
