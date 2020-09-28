@@ -4,13 +4,14 @@ from flask import Flask
 
 import movie.adapters.repository as repo
 from movie.adapters.memory_repository import MemoryRepository, populate_movies, populate_users
+from movie.utils.constants import USER_DATA_FILE, MOVIE_DATA_FILE
 
 
 def create_app(test_config: dict = None):
     app = Flask(__name__)
     app.config.from_object('config.Config')
-    movie_data_path = os.path.join('datafiles', 'Data1000Movies.csv')
-    users_data_path = os.path.join('datafiles', 'RegisteredUsers.csv')
+    movie_data_path = os.path.join('datafiles', MOVIE_DATA_FILE)
+    users_data_path = os.path.join('datafiles', USER_DATA_FILE)
 
     if test_config:
         app.config.from_mapping(test_config)

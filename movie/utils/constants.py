@@ -1,3 +1,6 @@
+MOVIE_DATA_FILE = 'Data1000Movies.csv'
+USER_DATA_FILE = 'RegisteredUsers.csv'
+
 HOME_BP = 'home_bp'
 
 MOVIE_BP = 'movie_bp'
