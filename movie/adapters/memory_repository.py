@@ -13,8 +13,6 @@ from movie.utils.user_reader import UserFileCSVReader
 
 
 class MemoryRepository(AbstractRepository):
-    user_file_data_path = 'datafiles/RegisteredUsers.csv'
-
     def __init__(self):
         self._movies = list()
         self._movies_index = dict()
