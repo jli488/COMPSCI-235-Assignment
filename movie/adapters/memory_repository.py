@@ -3,9 +3,10 @@ from bisect import insort_left
 from typing import List, Generator
 
 from movie.adapters.repository import AbstractRepository
-from movie.domainmodel.movie import Movie
+from movie.domainmodel.movie import Movie, Review
 from movie.domainmodel.user import User
 from movie.utils.movie_reader import MovieFileCSVReader
+from movie.utils.review_reader import ReviewFileCSVReader
 from movie.utils.user_reader import UserFileCSVReader
 
 
@@ -151,9 +152,23 @@ def populate_users(data_path: str, repo: MemoryRepository) -> None:
         repo.add_user(user)
 
 
+def populate_reviews(data_path: str, repo: MemoryRepository) -> None:
+    reader = ReviewFileCSVReader(data_path)
+    for movie_id, rating, comment in reader.dataset_of_reviews:
+        movie = repo.get_movie_by_id(movie_id)
+        review = Review(movie, comment, rating)
+        movie.add_review(review)
+
+
 def save_users_to_disk(data_path: str, repo: AbstractRepository) -> None:
     # Overwrite the users file every time we save users to disk
     with open(data_path, 'w', newline='') as f:
         user_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for user in repo.users:
             user_writer.writerow([user.username, user.password])
+
+
+def save_reviews_to_disk(data_path: str, review: Review) -> None:
+    with open(data_path, 'a', newline='') as f:
+        review_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        review_writer.writerow([review.movie.id, review.rating, review.review_text])

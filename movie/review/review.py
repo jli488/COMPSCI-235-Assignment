@@ -1,6 +1,7 @@
-from flask import Blueprint, request, render_template, url_for, redirect
+from flask import Blueprint, request, render_template, url_for, redirect, current_app
 
 import movie.adapters.repository as repo
+from movie.adapters.memory_repository import save_reviews_to_disk
 
 from movie.authentication.authentication import login_required
 from movie.domainmodel.movie import Review
@@ -24,6 +25,7 @@ def add_review():
         comment = form.review_text.data
         review = Review(movie, comment, rating)
         movie.add_review(review)
+        save_reviews_to_disk(current_app.config['REVIEW_DATA_PATH'], review)
         return render_template(
             'movie/movie_info.html',
             movie=movie,

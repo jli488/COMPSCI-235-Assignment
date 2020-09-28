@@ -1,5 +1,6 @@
-MOVIE_DATA_FILE = 'Data1000Movies.csv'
-USER_DATA_FILE = 'RegisteredUsers.csv'
+MOVIE_DATA_FILE = 'movies.csv'
+USER_DATA_FILE = 'users.csv'
+REVIEW_DATA_FILE = 'reviews.csv'
 
 HOME_BP = 'home_bp'
 

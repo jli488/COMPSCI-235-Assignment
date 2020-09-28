@@ -1,4 +1,3 @@
-from movie.authentication import services
 from movie.domainmodel.movie import Movie
 from movie.utils.user_reader import UserFileCSVReader
 
@@ -69,11 +68,3 @@ def test_delete_not_exist_movie(memory_repo):
     res = memory_repo.delete_movie(movie_not_exist)
     assert res is False
     assert memory_repo.get_total_number_of_movies() == 5
-
-
-def test_csv_user_reader(memory_repo):
-    reader = UserFileCSVReader('datafiles/RegisteredUsers.csv')
-    users = reader.dataset_of_users
-    assert len(users) == 2
-    assert users[0].username == 'test_user_001'
-    assert users[1].username == 'test_user_002'

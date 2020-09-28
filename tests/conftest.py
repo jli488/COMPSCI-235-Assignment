@@ -3,7 +3,12 @@ import pytest
 from movie.adapters import memory_repository
 from movie.domainmodel.movie import Movie
 
-MEMORY_REPO_DATA_PATH = 'datafiles/Data1000Movies.csv'
+TEST_CONFIG = {
+    'TESTING': True,
+    'TEST_MOVIE_DATA_PATH': '',
+    'TEST_USERS_DATA_PATH': '',
+    'WTF_CSRF_ENABLED': False
+}
 
 
 @pytest.fixture
