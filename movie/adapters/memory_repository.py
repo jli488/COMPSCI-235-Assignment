@@ -1,5 +1,7 @@
 import csv
+import shutil
 from bisect import insort_left
+import tempfile
 from typing import List, Generator
 
 from movie.adapters.repository import AbstractRepository
@@ -154,9 +156,11 @@ def populate_users(data_path: str, repo: MemoryRepository) -> None:
 
 def populate_reviews(data_path: str, repo: MemoryRepository) -> None:
     reader = ReviewFileCSVReader(data_path)
-    for movie_id, rating, comment in reader.dataset_of_reviews:
+    for review_fields in reader.dataset_of_reviews:
+        movie_id = review_fields[0]
+        review_args = review_fields[1:]
         movie = repo.get_movie_by_id(movie_id)
-        review = Review(movie, comment, rating)
+        review = Review(movie, *review_args)
         movie.add_review(review)
 
 
@@ -171,4 +175,17 @@ def save_users_to_disk(data_path: str, repo: AbstractRepository) -> None:
 def save_reviews_to_disk(data_path: str, review: Review) -> None:
     with open(data_path, 'a', newline='') as f:
         review_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        review_writer.writerow([review.movie.id, review.rating, review.review_text])
+        review_writer.writerow([review.id, review.movie.id,
+                                review.username, review.rating,
+                                review.review_text, review.timestamp])
+
+
+def remove_review_from_disk(data_path: str, review_id: str) -> None:
+    tmp_out = tempfile.NamedTemporaryFile(mode='w', newline='', delete=False)
+    with open(data_path, 'r', newline='') as input, tmp_out:
+        input_reviews = csv.reader(input, delimiter=',')
+        writer = csv.writer(tmp_out, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for review in input_reviews:
+            if review[0] != review_id:
+                writer.writerow(review)
+    shutil.move(tmp_out.name, data_path)

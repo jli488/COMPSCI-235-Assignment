@@ -18,3 +18,4 @@ LOGOUT_ENDPOINT = 'logout'
 
 REVIEW_BP = 'review_bp'
 REVIEW_ENDPOINT = 'review'
+REMOVE_REVIEW_ENDPOINT = 'delete_review'

@@ -31,8 +31,12 @@
         {% if movie.reviews|length > 0 %}
             <p>Review: </p>
             {% for review in movie.reviews %}
+                <p>{{ review.id }}</p>
                 <p>{{ review.rating }}</p>
                 <p>{{ review.review_text }}</p>
+                {% if review.username == session.get('username') %}
+                    <a href="{{ url_for('review_bp.remove_review', movie_id=movie.id, review_id=review.id) }}">delete</a>
+                {% endif %}
             {% endfor %}
         {% endif %}
     </main>

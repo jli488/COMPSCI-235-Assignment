@@ -7,18 +7,23 @@ from movie.domainmodel.director import Director
 
 
 class Review:
-    def __init__(self, movie: 'Movie', review_text: str, rating: int, timestamp: datetime = None):
+    def __init__(self, movie: 'Movie', username: str, review_text: str, rating: int, timestamp: float = None):
         self._movie = movie
+        self._user = username
         self._review_text = review_text
 
         if not timestamp:
-            timestamp = datetime.now()
+            timestamp = datetime.now().timestamp()
         self._timestamp = timestamp
 
         if 0 < rating < 11:
             self._rating = rating
         else:
             self._rating = None
+
+    @property
+    def id(self) -> str:
+        return self.movie.id + self.username + str(self.timestamp)
 
     @property
     def movie(self) -> 'Movie':
@@ -29,12 +34,16 @@ class Review:
         return self._review_text
 
     @property
-    def timestamp(self) -> datetime:
+    def timestamp(self) -> float:
         return self._timestamp
 
     @property
     def rating(self) -> int:
         return self._rating
+
+    @property
+    def username(self) -> str:
+        return self._user
 
     def __repr__(self) -> str:
         movie_str = repr(self._movie) + "\n"
@@ -194,6 +203,11 @@ class Movie:
     def remove_review(self, review: Review):
         for review_to_remove in self._reviews:
             if review_to_remove == review:
+                self._reviews.remove(review_to_remove)
+
+    def remove_review_by_id(self, review_id: str):
+        for review_to_remove in self._reviews:
+            if review_to_remove.id == review_id:
                 self._reviews.remove(review_to_remove)
 
     def set_director(self, director: Director):
