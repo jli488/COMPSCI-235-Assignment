@@ -1,5 +1,6 @@
 from html.parser import HTMLParser
 
+import pytest
 from flask import session, url_for
 
 from movie.utils.constants import REVIEW_ENDPOINT
@@ -78,3 +79,21 @@ def test_review(client, auth):
 
     response = client.get('/movie_info?movie_id=guardians+of+the+galaxy2014')
     assert b'delete' not in response.data
+
+
+@pytest.mark.parametrize(
+    ('username', 'password', 'message'),
+    (
+        ('', '', b'Username is required'),
+        ('cj', '', b'Username needs to be at least 3 characters'),
+        ('test', '', b'Password is required'),
+        ('test', 'test', b'Password requirements:'),
+        ('test_user_001', 'Test#6^0', b'Username is not unique, please try another one'),
+    )
+)
+def test_register_with_invalid_input(client, username, password, message):
+    response = client.post(
+        '/auth/register',
+        data={'username': username, 'password': password}
+    )
+    assert message in response.data

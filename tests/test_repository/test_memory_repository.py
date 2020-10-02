@@ -1,5 +1,8 @@
+from movie.domainmodel.actor import Actor
+from movie.domainmodel.director import Director
+from movie.domainmodel.genre import Genre
 from movie.domainmodel.movie import Movie
-from movie.utils.user_reader import UserFileCSVReader
+from movie.domainmodel.user import User
 
 
 def test_repository_can_add_movie(memory_repo):
@@ -68,3 +71,43 @@ def test_delete_not_exist_movie(memory_repo):
     res = memory_repo.delete_movie(movie_not_exist)
     assert res is False
     assert memory_repo.get_total_number_of_movies() == 5
+
+
+def test_get_movie_by_id(memory_repo):
+    movie = Movie('Test Movie', 2020)
+    memory_repo.add_movie(movie)
+    movie_id = movie.id
+    assert memory_repo.get_movie_by_id(movie_id) is movie
+
+
+def test_get_movie_by_actor(memory_repo):
+    movie = Movie('Test Movie', 2020)
+    movie.add_actor(Actor('Actor1'))
+    movie.add_actor(Actor('Actor2'))
+    memory_repo.add_movie(movie)
+    assert movie in memory_repo.get_movies_by_actor('Actor1')
+    assert movie in memory_repo.get_movies_by_actor('Actor2')
+
+
+def test_get_movie_by_director(memory_repo):
+    movie = Movie('Test Movie', 2020)
+    movie.director = Director('Director1')
+    memory_repo.add_movie(movie)
+    assert movie in memory_repo.get_movies_by_director('Director1')
+
+
+def test_get_movie_by_genre(memory_repo):
+    movie = Movie('Test Movie', 2020)
+    movie.add_genre(Genre('Genre1'))
+    movie.add_genre(Genre('Genre2'))
+    memory_repo.add_movie(movie)
+    assert movie in memory_repo.get_movies_by_genre('Genre1')
+    assert movie in memory_repo.get_movies_by_genre('Genre2')
+
+
+def test_add_user(memory_repo):
+    user = User('TestUser', 'Test123456')
+    memory_repo.add_user(user)
+    assert user is memory_repo.get_user('TestUser')
+    assert user is memory_repo.get_user('testuser')
+

@@ -157,7 +157,7 @@ class Movie:
         return self._genres
 
     @genres.setter
-    def genres(self, *genres: Genre):
+    def genres(self, genres: List[Genre]):
         for genre in genres:
             assert type(genre) is Genre, \
                 f"genre should be type Genre, instead {type(genre)} found"

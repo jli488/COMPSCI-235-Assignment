@@ -134,7 +134,7 @@ class MemoryRepository(AbstractRepository):
 
     def get_user(self, username: str) -> User:
         return next((user for user in self._users
-                     if user.username == username),
+                     if user.username == username.strip().lower()),
                     None)
 
 
