@@ -2,42 +2,42 @@
 
 {% block content %}
     <main id="movie_info">
-        <h2>{{ movie.title }}</h2>
+        <h2>{{ movie_title }}</h2>
         <a id="movie-review-btn" class="review-btn"
-           href="{{ url_for('review_bp.add_review', movie_id=movie.id) }}">Review</a>
-        {% if movie.director is not none %}
-            <p>Director: {{ movie.director.director_full_name }}</p>
+           href="{{ url_for('review_bp.add_review', movie_id=movie_id) }}">Review</a>
+        {% if movie_director_full_name is not none %}
+            <p>Director: {{ movie_director_full_name }}</p>
         {% endif %}
-        {% if movie.genres is not none %}
+        {% if movie_genres is not none %}
             <p>Genres: </p>
             <ul>
-                {% for genre in movie.genres %}
-                    <li>{{ genre.genre_name }}</li>
+                {% for genre_name in movie_genres %}
+                    <li>{{ genre_name }}</li>
                 {% endfor %}
             </ul>
         {% endif %}
-        {% if movie.actors is not none %}
+        {% if movie_actors is not none %}
             <p>Actors: </p>
             <ul>
-                {% for actor in movie.actors %}
-                    <li>{{ actor.actor_full_name }}</li>
+                {% for actor in movie_actors %}
+                    <li>{{ actor }}</li>
                 {% endfor %}
             </ul>
         {% endif %}
-        {% if movie.description is not none %}
+        {% if movie_description is not none %}
             <p>Description: </p>
-            <p>{{ movie.description }}</p>
+            <p>{{ movie_description }}</p>
         {% endif %}
-        {% if movie.reviews|length > 0 %}
+        {% if movie_reviews is not none %}
             <p>Reviews: </p>
-            {% for review in movie.reviews %}
+            {% for review_info in movie_reviews %}
                 <ul>
-                    <li>Rating: {{ review.rating }}</li>
-                    <li>Comment: {{ review.review_text }}</li>
-                    <li>By: {{ review.username }}</li>
+                    <li>Rating: {{ review_info[0] }}</li>
+                    <li>Comment: {{ review_info[1] }}</li>
+                    <li>By: {{ review_info[2] }}</li>
                 </ul>
-                {% if review.username == session.get('username') %}
-                    <a href="{{ url_for('review_bp.remove_review', movie_id=movie.id, review_id=review.id) }}">delete</a>
+                {% if review_info[2] == session.get('username') %}
+                    <a href="{{ url_for('review_bp.remove_review', movie_id=movie_id, review_id=review_info[3]) }}">delete</a>
                 {% endif %}
             {% endfor %}
         {% endif %}

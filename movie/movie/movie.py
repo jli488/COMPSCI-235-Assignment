@@ -119,7 +119,36 @@ def movie_info():
         return redirect(url_for('home_bp.home'))
 
     movie = repo.repo_instance.get_movie_by_id(movie_id)
+
+    movie_title = movie.title
+    movie_id = movie_id
+    movie_description = movie.description
+
+    movie_director_full_name = None
+    if movie.director:
+        movie_director_full_name = movie.director.director_full_name
+
+    movie_genres = None
+    if len(movie.genres) > 0:
+        movie_genres = [g.genre_name for g in movie.genres]
+
+    movie_actors = None
+    if len(movie.actors) > 0:
+        movie_actors = [a.actor_full_name for a in movie.actors]
+
+    movie_reviews = None
+    if len(movie.reviews) > 0:
+        movie_reviews = [(review.rating, review.review_text, review.username, review.id)
+                         for review in movie.reviews]
+
     return render_template(
         'movie/movie_info.html',
+        movie_title=movie_title,
+        movie_id=movie_id,
+        movie_director_full_name=movie_director_full_name,
+        movie_genres=movie_genres,
+        movie_actors=movie_actors,
+        movie_description=movie_description,
+        movie_reviews=movie_reviews,
         movie=movie
     )

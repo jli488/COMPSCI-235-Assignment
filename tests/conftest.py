@@ -1,12 +1,17 @@
+import os
+
 import pytest
 
+from movie import create_app
 from movie.adapters import memory_repository
 from movie.domainmodel.movie import Movie
+from movie.utils.constants import USER_DATA_FILE, MOVIE_DATA_FILE, REVIEW_DATA_FILE
 
 TEST_CONFIG = {
     'TESTING': True,
-    'TEST_MOVIE_DATA_PATH': '',
-    'TEST_USERS_DATA_PATH': '',
+    'TEST_MOVIE_DATA_PATH': os.path.join('tests', 'datafiles', MOVIE_DATA_FILE),
+    'TEST_REVIEWS_DATA_PATH': os.path.join('tests', 'datafiles', REVIEW_DATA_FILE),
+    'TEST_USERS_DATA_PATH': os.path.join('tests', 'datafiles', USER_DATA_FILE),
     'WTF_CSRF_ENABLED': False
 }
 
@@ -25,3 +30,29 @@ def memory_repo():
     repo.add_movie(movie_4)
     repo.add_movie(movie_5)
     return repo
+
+
+@pytest.fixture
+def client():
+    my_app = create_app(TEST_CONFIG)
+    return my_app.test_client()
+
+
+class AuthenticationManager:
+    def __init__(self, client):
+        self._client = client
+
+    def login(self, username='test_user_001', password='Test123456'):
+        return self._client.post(
+            'auth/login',
+            data={'username': username,
+                  'password': password}
+        )
+
+    def logout(self):
+        return self._client.get('auth/logout')
+
+
+@pytest.fixture
+def auth(client):
+    return AuthenticationManager(client)

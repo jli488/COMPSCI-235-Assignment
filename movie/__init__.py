@@ -17,7 +17,7 @@ def create_app(test_config: dict = None):
     if test_config:
         app.config.from_mapping(test_config)
         app.config['MOVIE_DATA_PATH'] = app.config['TEST_MOVIE_DATA_PATH']
-        app.config['MOVIE_DATA_PATH'] = app.config['TEST_USERS_DATA_PATH']
+        app.config['USER_DATA_PATH'] = app.config['TEST_USERS_DATA_PATH']
         app.config['REVIEW_DATA_PATH'] = app.config['TEST_REVIEWS_DATA_PATH']
 
     movie_data_path = app.config['MOVIE_DATA_PATH']
