@@ -75,10 +75,11 @@ def test_review(client, auth):
     parser = SimpleDeleteHrefParser()
     parser.feed(str(response.data))
     response = client.get(parser.delete_url)
+    review_id = parser.delete_url.split('review_id=')[-1]
     assert response.status_code == 302
 
     response = client.get('/movie_info?movie_id=guardians+of+the+galaxy2014')
-    assert b'delete' not in response.data
+    assert bytes(review_id, 'utf-8') not in response.data
 
 
 @pytest.mark.parametrize(

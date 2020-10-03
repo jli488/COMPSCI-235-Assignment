@@ -1,6 +1,6 @@
 from typing import Tuple, List
 
-from flask import Blueprint, request, render_template, url_for, redirect
+from flask import Blueprint, request, render_template, url_for
 
 import movie.adapters.repository as repo
 from movie.domainmodel.movie import Movie
@@ -112,34 +112,23 @@ def parse_movie_search_request(movies_per_page: int, request: request, form: Mov
     return movies, first_url, prev_url, next_url, last_url
 
 
-@movie_blueprint.route('/' + MOVIE_DETAILS_ENDPOINT, methods=['GET', 'POST'])
+@movie_blueprint.route('/' + MOVIE_DETAILS_ENDPOINT, methods=['GET'])
 def movie_info():
     movie_id = request.args.get('movie_id')
-    if not movie_id:
-        return redirect(url_for('home_bp.home'))
+    movie_dict = services.fetch_movie_info_by_id(movie_id, repo.repo_instance)
 
-    movie = repo.repo_instance.get_movie_by_id(movie_id)
+    movie_title = movie_dict.get('movie_title')
+    movie_id = movie_dict.get('movie_id')
+    movie_director_full_name = movie_dict.get('movie_director_full_name')
+    movie_genres = movie_dict.get('movie_genres')
+    movie_actors = movie_dict.get('movie_actors')
+    movie_description = movie_dict.get('movie_description')
+    movie_reviews = movie_dict.get('movie_reviews')
 
-    movie_title = movie.title
-    movie_id = movie_id
-    movie_description = movie.description
-
-    movie_director_full_name = None
-    if movie.director:
-        movie_director_full_name = movie.director.director_full_name
-
-    movie_genres = None
-    if len(movie.genres) > 0:
-        movie_genres = [g.genre_name for g in movie.genres]
-
-    movie_actors = None
-    if len(movie.actors) > 0:
-        movie_actors = [a.actor_full_name for a in movie.actors]
-
-    movie_reviews = None
-    if len(movie.reviews) > 0:
-        movie_reviews = [(review.rating, review.review_text, review.username, review.id)
-                         for review in movie.reviews]
+    if not movie_title:
+        return render_template(
+            'page404.html'
+        )
 
     return render_template(
         'movie/movie_info.html',
@@ -149,6 +138,5 @@ def movie_info():
         movie_genres=movie_genres,
         movie_actors=movie_actors,
         movie_description=movie_description,
-        movie_reviews=movie_reviews,
-        movie=movie
+        movie_reviews=movie_reviews
     )

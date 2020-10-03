@@ -67,3 +67,23 @@ def _find_fuzzy_match(fuzzy_term: str, items: Generator[str, None, None]) -> str
         if distance < min_dist:
             min_dist_item = item
     return min_dist_item
+
+
+def fetch_movie_info_by_id(movie_id: str, repo: AbstractRepository):
+    movie_info = dict()
+
+    movie = repo.get_movie_by_id(movie_id)
+    if movie:
+        movie_info['movie_title'] = movie.title
+        movie_info['movie_id'] = movie_id
+        movie_info['movie_description'] = movie.description
+        movie_info['movie_director_full_name'] = movie.director.director_full_name
+        movie_info['movie_genres'] = [g.genre_name for g in movie.genres]
+        movie_info['movie_actors'] = [a.actor_full_name for a in movie.actors]
+        movie_info['movie_reviews'] = [{'rating': review.rating,
+                                        'comment': review.review_text,
+                                        'username': review.username,
+                                        'id': review.id}
+                                       for review in movie.reviews]
+
+    return movie_info
