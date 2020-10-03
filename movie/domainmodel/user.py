@@ -2,8 +2,8 @@ from movie.domainmodel.movie import Movie, Review
 
 
 class User:
-    def __init__(self, username:str, password: str):
-        self._user_name = username.strip().lower()
+    def __init__(self, username: str, password: str):
+        self._user_name = username
         self._password = password
         self._watched_movies = list()
         self._review_list = list()

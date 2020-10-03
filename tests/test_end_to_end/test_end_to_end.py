@@ -1,7 +1,7 @@
 from html.parser import HTMLParser
 
 import pytest
-from flask import session, url_for
+from flask import session
 
 from movie.utils.constants import REVIEW_ENDPOINT
 
@@ -51,7 +51,7 @@ class SimpleDeleteHrefParser(HTMLParser):
 def test_review(client, auth):
     # Test add review
     auth.login()
-    response = client.get('/review?movie_id=guardians+of+the+galaxy2014')
+    response = client.get('/review?movie_title=Guardians+of+the+Galaxy&movie_id=guardians+of+the+galaxy2014')
     assert response.status_code == 200
     assert b'Guardians of the Galaxy' in response.data
 
@@ -84,11 +84,11 @@ def test_review(client, auth):
 @pytest.mark.parametrize(
     ('username', 'password', 'message'),
     (
-        ('', '', b'Username is required'),
-        ('cj', '', b'Username needs to be at least 3 characters'),
-        ('test', '', b'Password is required'),
-        ('test', 'test', b'Password requirements:'),
-        ('test_user_001', 'Test#6^0', b'Username is not unique, please try another one'),
+            ('', '', b'Username is required'),
+            ('cj', '', b'Username needs to be at least 3 characters'),
+            ('test', '', b'Password is required'),
+            ('test', 'test', b'Password requirements:'),
+            ('test_user_001', 'Test#6^0', b'Username is not unique, please try another one'),
     )
 )
 def test_register_with_invalid_input(client, username, password, message):

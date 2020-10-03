@@ -1,7 +1,7 @@
 import pytest
 
-from movie.domainmodel.movie import Movie
 from movie.domainmodel.director import Director
+from movie.domainmodel.movie import Movie
 
 
 def test_init():

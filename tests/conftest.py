@@ -5,6 +5,7 @@ import pytest
 from movie import create_app
 from movie.adapters import memory_repository
 from movie.domainmodel.movie import Movie
+from movie.domainmodel.user import User
 from movie.utils.constants import USER_DATA_FILE, MOVIE_DATA_FILE, REVIEW_DATA_FILE
 
 TEST_CONFIG = {
@@ -29,6 +30,9 @@ def memory_repo():
     repo.add_movie(movie_3)
     repo.add_movie(movie_4)
     repo.add_movie(movie_5)
+
+    user = User(username='ExistUser', password='Password123')
+    repo.add_user(user)
     return repo
 
 

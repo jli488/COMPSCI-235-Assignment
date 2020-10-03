@@ -1,7 +1,5 @@
 import csv
-import shutil
 from bisect import insort_left
-import tempfile
 from typing import List, Generator
 
 from movie.adapters.repository import AbstractRepository
@@ -134,7 +132,7 @@ class MemoryRepository(AbstractRepository):
 
     def get_user(self, username: str) -> User:
         return next((user for user in self._users
-                     if user.username == username.strip().lower()),
+                     if user.username.strip().lower() == username.strip().lower()),
                     None)
 
 
@@ -168,22 +166,3 @@ def save_users_to_disk(data_path: str, repo: AbstractRepository) -> None:
         user_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for user in repo.users:
             user_writer.writerow([user.username, user.password])
-
-
-def save_reviews_to_disk(data_path: str, review: Review) -> None:
-    with open(data_path, 'a', newline='') as f:
-        review_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        review_writer.writerow([review.id, review.movie.id,
-                                review.username, review.rating,
-                                review.review_text, review.timestamp])
-
-
-def remove_review_from_disk(data_path: str, review_id: str) -> None:
-    tmp_out = tempfile.NamedTemporaryFile(mode='w', newline='', delete=False)
-    with open(data_path, 'r', newline='') as input, tmp_out:
-        input_reviews = csv.reader(input, delimiter=',')
-        writer = csv.writer(tmp_out, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        for review in input_reviews:
-            if review[0] != review_id:
-                writer.writerow(review)
-    shutil.move(tmp_out.name, data_path)

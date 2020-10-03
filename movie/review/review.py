@@ -1,10 +1,8 @@
-from flask import Blueprint, request, render_template, url_for, redirect, current_app, session
+from flask import Blueprint, request, render_template, url_for, redirect, session
 
 import movie.adapters.repository as repo
-from movie.adapters.memory_repository import save_reviews_to_disk, remove_review_from_disk
-
 from movie.authentication.authentication import login_required
-from movie.domainmodel.movie import Review
+from movie.review import services
 from movie.review.review_form import MovieReviewForm
 from movie.utils.constants import REVIEW_BP, REVIEW_ENDPOINT, REMOVE_REVIEW_ENDPOINT, MOVIE_BP, MOVIE_DETAILS_ENDPOINT
 
@@ -16,17 +14,13 @@ review_blueprint = Blueprint(REVIEW_BP, __name__)
 def add_review():
     form = MovieReviewForm()
     movie_id = request.args.get('movie_id')
-    movie = repo.repo_instance.get_movie_by_id(movie_id)
-    if movie is None:
-        return redirect(url_for('home_bp.home'))
-    movie_title = movie.title
+    movie_title = request.args.get('movie_title')
 
     if form.validate_on_submit():
         rating = int(form.rating.data)
         comment = form.review_text.data
-        review = Review(movie, session['username'], comment, rating)
-        movie.add_review(review)
-        save_reviews_to_disk(current_app.config['REVIEW_DATA_PATH'], review)
+        username = session.get('username')
+        services.add_review(movie_id, username, comment, rating, repo.repo_instance)
 
         movie_info_url = url_for(MOVIE_BP + '.' + MOVIE_DETAILS_ENDPOINT, movie_id=movie_id)
         return redirect(movie_info_url)
@@ -43,10 +37,8 @@ def add_review():
 @login_required
 def remove_review():
     movie_id = request.args.get('movie_id')
-    movie = repo.repo_instance.get_movie_by_id(movie_id)
     review_id = request.args.get('review_id')
-    movie.remove_review_by_id(review_id)
-    remove_review_from_disk(current_app.config['REVIEW_DATA_PATH'], review_id)
+    services.remove_review(review_id, movie_id, repo.repo_instance)
 
     movie_info_url = url_for(MOVIE_BP + '.' + MOVIE_DETAILS_ENDPOINT, movie_id=movie_id)
     return redirect(movie_info_url)

@@ -109,5 +109,3 @@ def test_add_user(memory_repo):
     user = User('TestUser', 'Test123456')
     memory_repo.add_user(user)
     assert user is memory_repo.get_user('TestUser')
-    assert user is memory_repo.get_user('testuser')
-

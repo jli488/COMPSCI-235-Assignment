@@ -1,8 +1,6 @@
 import csv
 from typing import List, Tuple
 
-from movie.domainmodel.movie import Review
-
 
 class ReviewFileCSVReader(object):
     def __init__(self, data_path):

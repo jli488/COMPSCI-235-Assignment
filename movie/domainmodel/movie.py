@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import List
 
-from movie.domainmodel.genre import Genre
 from movie.domainmodel.actor import Actor
 from movie.domainmodel.director import Director
+from movie.domainmodel.genre import Genre
 
 
 class Review:
