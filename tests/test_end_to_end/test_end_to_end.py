@@ -98,3 +98,8 @@ def test_register_with_invalid_input(client, username, password, message):
         data={'username': username, 'password': password}
     )
     assert message in response.data
+
+
+def test_page_404(client):
+    response = client.get('/movie_info?movie_id=notexist202')
+    assert b'The page doesn\'t exist' in response.data
