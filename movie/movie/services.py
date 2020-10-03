@@ -41,7 +41,6 @@ def _get_items_from_offset(offset: int, n: int, gen: Generator) -> List:
 def get_n_movies_by_director_fuzzy(offset: int, n: int, repo: AbstractRepository,
                                    director_fuzzy: str) -> Tuple[List[Movie], int]:
     director = _find_fuzzy_match(director_fuzzy, repo.directors)
-
     return get_n_movies_by_director(offset, n, repo, director)
 
 
