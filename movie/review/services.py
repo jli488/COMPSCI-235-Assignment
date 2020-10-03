@@ -2,7 +2,7 @@ import csv
 import shutil
 import tempfile
 
-from flask import current_app
+from flask import current_app, has_app_context
 
 from movie.adapters.repository import AbstractRepository
 from movie.domainmodel.movie import Review
@@ -10,9 +10,11 @@ from movie.domainmodel.movie import Review
 
 def add_review(movie_id: str, username: str, comment: str, rating: int, repo: AbstractRepository) -> None:
     movie = repo.get_movie_by_id(movie_id)
-    review = Review(movie, username, comment, rating)
-    movie.add_review(review)
-    _save_reviews_to_disk(current_app.config['REVIEW_DATA_PATH'], review)
+    if movie:
+        review = Review(movie, username, comment, rating)
+        movie.add_review(review)
+        if has_app_context():
+            _save_reviews_to_disk(current_app.config['REVIEW_DATA_PATH'], review)
 
 
 def _save_reviews_to_disk(data_path: str, review: Review) -> None:
@@ -26,7 +28,8 @@ def _save_reviews_to_disk(data_path: str, review: Review) -> None:
 def remove_review(review_id: str, movie_id: str, repo: AbstractRepository):
     movie = repo.get_movie_by_id(movie_id)
     movie.remove_review_by_id(review_id)
-    _remove_review_from_disk(current_app.config['REVIEW_DATA_PATH'], review_id)
+    if has_app_context():
+        _remove_review_from_disk(current_app.config['REVIEW_DATA_PATH'], review_id)
 
 
 def _remove_review_from_disk(data_path: str, review_id: str) -> None:
