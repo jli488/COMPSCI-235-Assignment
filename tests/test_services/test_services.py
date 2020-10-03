@@ -75,9 +75,9 @@ def test_can_remove_review(memory_repo):
     review_services.add_review(movie_id, username, review_text, rating, memory_repo)
     movie_dict = movie_services.fetch_movie_info_by_id(movie_id, memory_repo)
     review_id = [dictionary['id']
-              for dictionary in movie_dict.get('movie_reviews')
-              if dictionary['comment'] == review_text
-              if dictionary['username'] == username][0]
+                 for dictionary in movie_dict.get('movie_reviews')
+                 if dictionary['comment'] == review_text
+                 if dictionary['username'] == username][0]
     review_services.remove_review(review_id, movie_id, memory_repo)
     movie_dict = movie_services.fetch_movie_info_by_id(movie_id, memory_repo)
     assert next(
