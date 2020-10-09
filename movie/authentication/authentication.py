@@ -3,7 +3,6 @@ from functools import wraps
 from flask import Blueprint, render_template, url_for, redirect, session, current_app
 
 import movie.adapters.repository as repo
-from movie.adapters.memory_repository import save_users_to_disk
 from movie.authentication import services
 from movie.authentication.auth_forms import RegistrationForm, LoginForm
 from movie.utils.constants import AUTH_BP, REGISTER_ENDPOINT, LOGIN_ENDPOINT, LOGOUT_ENDPOINT, HOME_BP
@@ -20,7 +19,6 @@ def register():
     if form.validate_on_submit():
         try:
             services.add_user(form.username.data, form.password.data, repo.repo_instance)
-            save_users_to_disk(current_app.config['USER_DATA_PATH'], repo.repo_instance)
             return redirect(url_for(AUTH_BP + '.' + LOGIN_ENDPOINT))
         except services.DuplicatedUsernameException as e:
             username_error_msg = 'Username is not unique, please try another one'

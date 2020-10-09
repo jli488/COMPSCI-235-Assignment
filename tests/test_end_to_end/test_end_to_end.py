@@ -3,7 +3,7 @@ from html.parser import HTMLParser
 import pytest
 from flask import session
 
-from movie.utils.constants import REVIEW_ENDPOINT
+from movie.utils.constants import REVIEW_ENDPOINT, LIST_MOVIE_ENDPOINT
 
 
 def test_login(client, auth):
@@ -51,26 +51,26 @@ class SimpleDeleteHrefParser(HTMLParser):
 def test_review(client, auth):
     # Test add review
     auth.login()
-    response = client.get('/review?movie_title=Guardians+of+the+Galaxy&movie_id=guardians+of+the+galaxy2014')
+    response = client.get('/review?movie_title=Guardians+of+the+Galaxy&movie_id=guardians_of_the_galaxy_2014')
     assert response.status_code == 200
     assert b'Guardians of the Galaxy' in response.data
 
     response = client.post(
-        '/review?movie_id=guardians+of+the+galaxy2014',
+        '/review?movie_id=guardians_of_the_galaxy_2014',
         data={
             'rating': 4,
             'review_text': 'This is a test review'
         }
     )
-    assert response.headers['Location'] == 'http://localhost/movie_info?movie_id=guardians+of+the+galaxy2014'
+    assert response.headers['Location'] == 'http://localhost/movie_info?movie_id=guardians_of_the_galaxy_2014'
 
     # Test if review can be retrieved
-    response = client.get('/movie_info?movie_id=guardians+of+the+galaxy2014')
+    response = client.get('/movie_info?movie_id=guardians_of_the_galaxy_2014')
     assert response.status_code == 200
     assert b'This is a test review' in response.data
 
     # Test delete review
-    response = client.get('/movie_info?movie_id=guardians+of+the+galaxy2014')
+    response = client.get('/movie_info?movie_id=guardians_of_the_galaxy_2014')
     assert b'delete' in response.data
     parser = SimpleDeleteHrefParser()
     parser.feed(str(response.data))
@@ -78,7 +78,7 @@ def test_review(client, auth):
     review_id = parser.delete_url.split('review_id=')[-1]
     assert response.status_code == 302
 
-    response = client.get('/movie_info?movie_id=guardians+of+the+galaxy2014')
+    response = client.get('/movie_info?movie_id=guardians_of_the_galaxy_2014')
     assert bytes(review_id, 'utf-8') not in response.data
 
 
@@ -100,6 +100,34 @@ def test_register_with_invalid_input(client, username, password, message):
     assert message in response.data
 
 
+@pytest.mark.parametrize(
+    ('username', 'password', 'message'),
+    (
+            ('test_user_001', 'test', b'Password cannot be authenticated, please check your password'),
+            ('test_user_002', 'test', b'User cannot be recognized, please check your username')
+    )
+)
+def test_login_with_invalid_input(client, username, password, message):
+    response = client.post(
+        '/auth/login',
+        data={'username': username, 'password': password}
+    )
+    assert message in response.data
+
+
 def test_page_404(client):
     response = client.get('/movie_info?movie_id=notexist202')
     assert b'The page doesn\'t exist' in response.data
+
+
+def test_movie_list(client):
+    response = client.get('/' + LIST_MOVIE_ENDPOINT)
+    assert response.status_code == 200
+    assert b'Guardians of the Galaxy' in response.data
+
+
+def test_movie_search(client):
+    response = client.get('/' + LIST_MOVIE_ENDPOINT + "?search_by=Director&search_key=James+Gunn")
+    assert response.status_code == 200
+    assert b'Guardians of the Galaxy' in response.data
+    assert b'Prometheus' not in response.data

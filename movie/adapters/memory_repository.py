@@ -128,7 +128,8 @@ class MemoryRepository(AbstractRepository):
         return False
 
     def add_user(self, user: User) -> None:
-        self._users.append(user)
+        if user not in self._users:
+            self._users.append(user)
 
     def get_user(self, username: str) -> User:
         return next((user for user in self._users
@@ -144,7 +145,6 @@ def populate_movies(data_path: str, repo: MemoryRepository) -> None:
 
 
 def populate_users(data_path: str, repo: MemoryRepository) -> None:
-    # Read users from files on disk
     reader = UserFileCSVReader(data_path)
     for user in reader.dataset_of_users:
         repo.add_user(user)
@@ -158,11 +158,3 @@ def populate_reviews(data_path: str, repo: MemoryRepository) -> None:
         movie = repo.get_movie_by_id(movie_id)
         review = Review(movie, *review_args)
         movie.add_review(review)
-
-
-def save_users_to_disk(data_path: str, repo: AbstractRepository) -> None:
-    # Overwrite the users file every time we save users to disk
-    with open(data_path, 'w', newline='') as f:
-        user_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        for user in repo.users:
-            user_writer.writerow([user.username, user.password])

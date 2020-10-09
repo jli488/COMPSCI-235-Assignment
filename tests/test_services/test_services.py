@@ -1,5 +1,8 @@
+import tempfile
+
 import pytest
 
+from movie import populate_users
 from movie.authentication import services as auth_services
 from movie.authentication.services import AuthenticationException
 from movie.movie import services as movie_services
@@ -30,6 +33,19 @@ def test_cannot_add_user_with_existing_name(memory_repo):
         auth_services.add_user(username.lower(), password, memory_repo)
 
 
+def test_can_save_user(memory_repo):
+    # add and save user to disk
+    username = 'TestUser'
+    password = 'abcd1A23'
+    auth_services.add_user(username, password, memory_repo)
+
+    tmp_file = tempfile.NamedTemporaryFile(delete=False)
+    auth_services._save_users_to_disk(tmp_file.name, memory_repo)
+
+    with open(tmp_file.name, 'r') as f:
+        file_content = ''.join(f.readlines())
+        assert 'TestUser' in file_content
+
 def test_authentication_with_valid_credentials(memory_repo):
     username = 'TestUser'
     password = 'abcd1A23'
@@ -53,7 +69,7 @@ def test_authentication_with_invalid_credentials(memory_repo):
 
 
 def test_can_add_review(memory_repo):
-    movie_id = 'movie12000'
+    movie_id = 'movie1_2000'
     review_text = 'This is a test review'
     username = 'ExistUser'
     rating = 4
@@ -68,7 +84,7 @@ def test_can_add_review(memory_repo):
 
 
 def test_can_remove_review(memory_repo):
-    movie_id = 'movie12000'
+    movie_id = 'movie1_2000'
     review_text = 'ToMakeAUniqueComment8X2g$1)*'
     username = 'ExistUser'
     rating = 4
@@ -101,7 +117,7 @@ def test_find_fuzzy_match():
 
 
 def test_fetch_movie_info_by_id(memory_repo):
-    movie_id = 'movie12000'
+    movie_id = 'movie1_2000'
     movie_info = movie_services.fetch_movie_info_by_id(movie_id, memory_repo)
     assert movie_info['movie_title'] == 'Movie1'
 

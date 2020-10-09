@@ -103,7 +103,7 @@ class Movie:
 
     @property
     def id(self) -> str:
-        return self.title.lower() + str(self.year)
+        return self.title.lower().replace(" ", "_") + "_" + str(self.year)
 
     @property
     def title(self) -> str:
