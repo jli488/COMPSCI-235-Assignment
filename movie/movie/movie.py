@@ -5,7 +5,7 @@ from flask import Blueprint, request, render_template, url_for
 import movie.adapters.repository as repo
 from movie.domainmodel.movie import Movie
 from movie.movie import services
-from movie.movie.search_forms import MovieSearchForm
+from movie.movie.movie_forms import MovieSearchForm
 from movie.utils.constants import MOVIE_BP, LIST_MOVIE_ENDPOINT, MOVIE_DETAILS_ENDPOINT
 
 movie_blueprint = Blueprint(MOVIE_BP, __name__)
@@ -13,7 +13,7 @@ movie_blueprint = Blueprint(MOVIE_BP, __name__)
 
 @movie_blueprint.route('/' + LIST_MOVIE_ENDPOINT, methods=['GET', 'POST'])
 def movies():
-    movies_per_page = 5
+    movies_per_page = int(request.args.get('movies_per_page', 5))
     form = MovieSearchForm()
 
     search_by = request.args.get('search_by', None)
@@ -50,16 +50,19 @@ def parse_movie_list_request(movies_per_page: int, request: request) -> Tuple[Li
     total_movies = services.get_movie_num(repo.repo_instance)
 
     if offset > 0:
-        prev_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=offset - movies_per_page)
-        first_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT)
+        prev_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=offset - movies_per_page,
+                           movies_per_page=movies_per_page)
+        first_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, movies_per_page=movies_per_page)
     if offset + len(movies) < total_movies:
-        next_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=offset + movies_per_page)
+        next_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=offset + movies_per_page,
+                           movies_per_page=movies_per_page)
 
         if total_movies % movies_per_page == 0:
             last_page = total_movies // movies_per_page - 1
         else:
             last_page = total_movies // movies_per_page
-        last_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=last_page * movies_per_page)
+        last_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=last_page * movies_per_page,
+                           movies_per_page=movies_per_page)
 
     return movies, first_url, prev_url, next_url, last_url
 
@@ -92,19 +95,20 @@ def parse_movie_search_request(movies_per_page: int, request: request, form: Mov
     if offset > 0:
         prev_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=offset - movies_per_page,
                            search_by=search_by,
-                           search_key=search_key)
-        first_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, search_by=search_by, search_key=search_key)
+                           search_key=search_key,
+                           movies_per_page=movies_per_page)
+        first_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, search_by=search_by, search_key=search_key,
+                            movies_per_page=movies_per_page)
     if offset * movies_per_page + len(movies) < total_movies:
         next_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=offset + movies_per_page,
-                           search_by=search_by,
-                           search_key=search_key)
+                           search_by=search_by, search_key=search_key, movies_per_page=movies_per_page)
 
         if total_movies % movies_per_page == 0:
             last_page = total_movies // movies_per_page - 1
         else:
             last_page = total_movies // movies_per_page
         last_url = url_for(MOVIE_BP + '.' + LIST_MOVIE_ENDPOINT, offset=last_page * movies_per_page,
-                           search_by=search_by, search_key=search_key)
+                           search_by=search_by, search_key=search_key, movies_per_page=movies_per_page)
 
     form.search_by.data = search_by
     form.search_text.data = search_key
