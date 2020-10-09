@@ -1,41 +1,43 @@
-# CS235 -- Assignment 2
+# Movie Web Application
 
-### Functional requirements met
-- Browsing movies
-    - Able to navigate movie list
-    - Properly calculate previous, next, first, and last page
-    - For each movie there is a hyperlink to the movie details page, where the review listed as well
-- Searching for movies by actor, genre, and director
-    - Able to search by either actor, genre, or director
-    - Implemented fuzzy search as well (by using editdistance)
-- Registering, loging in, and loging out users
-    - Able to register for users and login/logout
-    - Also able to persist user to disk file, there is a `users.csv` file under both `adapters/datafiles` and `tests/datafiles`
-    - Registered users can be load back into memory repo after app restart
-- Reviewing movies
-    - For registered users, able to review movies
-    - Reviews will also be persisted to disk to prevent data lost after app restart
-- New cool features
-    - Persistence of users and reviews data
-    - For review data, the user who reviewed the movie and delete the review in movie details page
-    - Users other than the one who put the review wouldn't be able to see the delete button
+## Description
 
-### Non functional requirements met
-- Conformance to the project structure used for sample Flask application
-    - The project contains mainly `movie` and `tests`, where all blueprints stay in the `movie` directory
-    - Files are organized for each submodule, includes `domainmodel`, `adapters`, `movie`, `home`, `review`, etc.
-- User interface
-    - CSS was used to style HTML pages
-    - Used jinja2 for HTML templating
-- Web interface
-    - Appropriate definition of entry points
-    - Appropreate use of HTTP protocol
-- Testing
-    - Test cases covered from unit test to integration end to end test
-- Application of the Repository Pattern
-    - Abtract class of `AbstractRepository` is used as the interface
-    - `MemoryRepository` is one concrete implementation for data storage and retrieve
-- Use of Blueprint
-    - Blueprints are used, include: `movie_bp`, `review_bp`, `auth_bp`
-- Authentication
-    - Signed cookies and Flask WTForms are used for security
+A web application for COMPSCI-235 assignment2. Developed using Python's Flask framework. Some other libraries/tools used in this project include: Jinja2 for templating, WTForm for secure form post, pytest for testing, editdistance for fuzzy search, etc.
+
+The project used repository design pattern, and currently included a memory repository for data storage, at the mean time, it also implemented a persistent layer for user and review using plain text local files to make sure that a restart of the application wouldn't invalidate all users, and reviews will also be kept after restart.
+
+For testing, this project included unit test, end to end test covered different layers.
+
+## Installation
+
+**Installation via requirements.txt**
+
+```shell
+$ cd COMPSCI-235-Assignment
+$ py -3 -m venv venv
+$ venv\Scripts\activate
+$ pip install -r requirements.txt
+```
+
+When using PyCharm, follow the path of 'File'->'Settings'->'Project:COMPSCI-235-Assignment' to configure the virtual environment (either use a created one or create a new one from there).
+
+## Execution
+
+**Running the application**
+
+From the *COMPSCI-235-Assignment* directory:
+````shell
+$ flask run
+```` 
+
+Make sure the virtual environment has been selected as the project interpreter
+
+## Configuration
+
+The *COMPSCI-235-Assignment/.env* contains global environment settings include:
+
+- `FLASK_APP`: Entry point of the application
+- `FLASK_ENV`: The environment in which to run the application (either `development` or `production`)
+- `SECRET_KEY`: Secret key used to encrypt session data
+- `TESTING`: Set to False for running the application
+- `WTF_CSRF_SECRET_KEY`: Secret key used by the WTForm library
