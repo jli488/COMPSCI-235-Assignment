@@ -3,7 +3,7 @@
 {% block content %}
     <main id="movie_info">
         <h2>{{ movie_title }}</h2>
-        <a id="movie-review-btn" class="review-btn"
+        <a id="movie-review-btn" class="btn btn-secondary"
            href="{{ url_for('review_bp.add_review', movie_title=movie_title, movie_id=movie_id) }}">Review</a>
         {% if movie_director_full_name is not none %}
             <p>Director: {{ movie_director_full_name }}</p>
