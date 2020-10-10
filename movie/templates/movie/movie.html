@@ -1,56 +1,82 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <header id="article-header" class="title">
-        <h1>{{ title }}</h1>
-    </header>
-
     <div id="movie-search-formwrapper" class="formwrapper">
         <h1 id="movie-search-title" class="title">{{ title }}</h1>
-        <form method="POST" action="{{ url_for('movie_bp.movies') }}">
+        <form method="POST" action="{{ url_for('movie_bp.movies') }}" class="form-inline justify-content-between">
             {{ form.csrf_token }}
-            <div id="search-criteria-field" class="form-field">
-                {{ form.search_by.label }} {{ form.search_by }}
+            <div class="d-flex">
+                <div class="form-group">
+                    <label for="search_by">{{ form.search_by.label }}</label>
+                    {{ form.search_by(class_="form-control ml-2") }}
+                </div>
+                <div class="form-group ml-4">
+                    <label for="search_key"> {{ form.search_text.label }} </label>
+                    {{ form.search_text(class_="form-control ml-2") }}
+                </div>
             </div>
-            <div id="search-text-field" class="form-field">
-                {{ form.search_text.label }} {{ form.search_text }}
+            <div>
+                {{ form.submit(class_="btn btn-primary") }}
+                <button type="button" class="btn btn-secondary" onclick="location.href='{{ clear_url }}'">Clear</button>
             </div>
-            {{ form.submit }}
+
         </form>
-        <button class="btn-general" onclick="location.href='{{ clear_url }}'">Clear</button>
+    </div>
+    <hr class="my-4">
+    <div class="dropdown">
+        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+            Movies per page
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=5) }}">5</a>
+            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=10) }}">10</a>
+            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=15) }}">15</a>
+        </div>
     </div>
 
-    <nav class="movie_nav">
-        <div style="float: left">
-            {% if first_url is not none %}
-                <button class="btn-general" onclick="location.href='{{ first_url }}'">First</button>
-            {% else %}
-                <button class="btn-general-disable" disabled>First</button>
-            {% endif %}
-            {% if prev_url is not none %}
-                <button class="btn-general" onclick="location.href='{{ prev_url }}'">Previous</button>
-            {% else %}
-                <button class="btn-general-disable" disabled>Previous</button>
-            {% endif %}
-        </div>
-        <div style="float: right">
-            {% if next_url is not none %}
-                <button class="btn-general" onclick="location.href='{{ next_url }}'">Next</button>
-            {% else %}
-                <button class="btn-general-disable" disabled>Next</button>
-            {% endif %}
-            {% if last_url is not none %}
-                <button class="btn-general" onclick="location.href='{{ last_url }}'">Last</button>
-            {% else %}
-                <button class="btn-general-disable" disabled>Last</button>
-            {% endif %}
-        </div>
-    </nav>
 
-    <div class="movie_list">
-        {% for movie in movies %}
-            <a href="{{ url_for('movie_bp.movie_info', movie_id=movie.id) }}">{{ movie.title }}</a><br>
-        {% endfor %}
+    <div class="d-flex flex-column">
+        <nav class="d-flex justify-content-between">
+            <div>
+                {% if first_url is not none %}
+                    <button class="btn btn-general" onclick="location.href='{{ first_url }}'">First</button>
+                {% else %}
+                    <button class="btn btn-general-disable" disabled>First</button>
+                {% endif %}
+                {% if prev_url is not none %}
+                    <button class="btn btn-general" onclick="location.href='{{ prev_url }}'">Previous</button>
+                {% else %}
+                    <button class="btn btn-general-disable" disabled>Previous</button>
+                {% endif %}
+            </div>
+            <div>
+                {% if next_url is not none %}
+                    <button class="btn btn-general" onclick="location.href='{{ next_url }}'">Next</button>
+                {% else %}
+                    <button class="btn btn-general-disable" disabled>Next</button>
+                {% endif %}
+                {% if last_url is not none %}
+                    <button class="btn btn-general" onclick="location.href='{{ last_url }}'">Last</button>
+                {% else %}
+                    <button class="btn btn-general-disable" disabled>Last</button>
+                {% endif %}
+            </div>
+        </nav>
+        <div class="my-3 p-3 bg-white rounded shadow-sm">
+            <h6 class="border-bottom border-gray pb-2 mb-0">Movies</h6>
+            {% for movie in movies %}
+                <div class="media text-muted pt-3">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">{{ movie.title }}</strong>
+                            <a href="{{ url_for('movie_bp.movie_info', movie_id=movie.id) }}">Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}

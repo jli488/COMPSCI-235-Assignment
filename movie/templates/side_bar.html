@@ -1,14 +1,30 @@
-<aside>
-    <p id="aside-title" class="title">Movies App for A2</p>
-    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="nav_logo" id="logo"/>
-    <div id="aside-btns">
-        <a id="movie-home-btn" class="aside-btn" href="{{ url_for('home_bp.home') }}">Movie home</a>
-        <a id="movie-list-btn" class="aside-btn" href="{{ url_for('movie_bp.movies') }}">Movie list</a>
-        {% if 'username' not in session %}
-            <a id="movie-register-btn" class="aside-btn" href="{{ url_for('auth_bp.register') }}">Register</a>
-            <a id="movie-login-btn" class="aside-btn" href="{{ url_for('auth_bp.login') }}">Login</a>
-        {% else %}
-            <a id="movie-logout-btn" class="aside-btn" href="{{ url_for('auth_bp.logout') }}">Logout</a>
-        {% endif %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="nav_logo" id="logo"/>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a id="movie-home-btn" class="nav-link" href="{{ url_for('home_bp.home') }}">Movie home</a>
+            </li>
+            <li class="nav-item">
+                <a id="movie-list-btn" class="nav-link" href="{{ url_for('movie_bp.movies') }}">Movie list</a>
+            </li>
+        </ul>
+        <div class="clearfix">
+            {% if 'username' not in session %}
+                <a id="movie-register-btn" class="btn btn-outline-info nav-link float-left mr-2"
+                   href="{{ url_for('auth_bp.register') }}">Register</a>
+                <a id="movie-login-btn" class="btn btn-outline-info nav-link float-right"
+                   href="{{ url_for('auth_bp.login') }}">Login</a>
+            {% else %}
+                <a id="movie-logout-btn" class="btn btn-outline-info nav-link float-right"
+                   href="{{ url_for('auth_bp.logout') }}">Logout</a>
+            {% endif %}
+        </div>
     </div>
-</aside>
+</nav>
