@@ -30,10 +30,14 @@
         </a>
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=5) }}">5</a>
-            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=10) }}">10</a>
-            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=15) }}">15</a>
-            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=20) }}">20</a>
+            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=5, search_by=form.search_by.data,
+                    search_key=form.search_text.data) }}">5</a>
+            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=10, search_by=form.search_by.data,
+                    search_key=form.search_text.data) }}">10</a>
+            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=15, search_by=form.search_by.data,
+                    search_key=form.search_text.data) }}">15</a>
+            <a class="dropdown-item" href="{{ url_for('movie_bp.movies', movies_per_page=20, search_by=form.search_by.data,
+                    search_key=form.search_text.data) }}">20</a>
         </div>
     </div>
 
