@@ -46,6 +46,7 @@ movies = Table(
 reviews = Table(
     'reviews', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('timestamp', Float, nullable=False),
     Column('user_id', ForeignKey('users.id')),
     Column('movie_id', ForeignKey('movies.id')),
     Column('comments', String(255)),
@@ -59,7 +60,7 @@ def map_model_to_tables():
         '_password': users.c.password,
         '_time_spent_watching_movies_minutes': users.c.time_spent_watching_movies_minutes,
         '_watched_movies': relationship(Movie),
-        '_review_list': relationship(Review)
+        '_review_list': relationship(Review, backref='_user')
     })
     mapper(Movie, movies, properties={
         '_title': movies.c.title,
@@ -70,4 +71,18 @@ def map_model_to_tables():
         '_actors': relationship(Actor),
         '_genres': relationship(Genre),
         '_reviews': relationship(Review, backref='_movie')
+    })
+    mapper(Review, reviews, properties={
+        '_review_text': reviews.c.comments,
+        '_rating': reviews.c.rating,
+        '_timestamp': reviews.c.timestamp
+    })
+    mapper(Genre, genres, properties={
+        '_Genre__genre_name': genres.c.genre_name
+    })
+    mapper(Director, directors, properties={
+        '_name': directors.c.full_name
+    })
+    mapper(Actor, actors, properties={
+        '_name': actors.c._name
     })
