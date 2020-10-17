@@ -1,8 +1,7 @@
 from movie.domainmodel.actor import Actor
 from movie.domainmodel.director import Director
 from movie.domainmodel.genre import Genre
-from movie.domainmodel.movie import Movie
-from movie.domainmodel.user import User
+from movie.domainmodel.movie import Movie, User
 
 
 def test_repository_can_add_movie(memory_repo):

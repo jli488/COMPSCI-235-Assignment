@@ -4,7 +4,7 @@ from flask import current_app, has_app_context
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from movie.adapters.repository import AbstractRepository
-from movie.domainmodel.user import User
+from movie.domainmodel.movie import User
 
 
 class DuplicatedUsernameException(Exception):

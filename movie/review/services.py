@@ -11,7 +11,8 @@ from movie.domainmodel.movie import Review
 def add_review(movie_id: str, username: str, comment: str, rating: int, repo: AbstractRepository) -> None:
     movie = repo.get_movie_by_id(movie_id)
     if movie:
-        review = Review(movie, username, comment, rating)
+        user = repo.get_user(username)
+        review = Review(movie, user, comment, rating)
         movie.add_review(review)
         if has_app_context():
             _save_reviews_to_disk(current_app.config['REVIEW_DATA_PATH'], review)

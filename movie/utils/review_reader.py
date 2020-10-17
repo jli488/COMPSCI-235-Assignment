@@ -1,5 +1,5 @@
 import csv
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 
 class ReviewFileCSVReader(object):
@@ -8,7 +8,7 @@ class ReviewFileCSVReader(object):
         self._reviews = list()
 
     @property
-    def dataset_of_reviews(self) -> List[Tuple]:
+    def dataset_of_reviews(self) -> List[Dict]:
         self.read_csv_file()
         return self._reviews
 
@@ -16,9 +16,6 @@ class ReviewFileCSVReader(object):
         with open(self._data_path, 'r') as csv_file:
             reviews = csv.reader(csv_file, delimiter=',')
             for review in reviews:
-                movie_id = review[1]
-                username = review[2]
-                rating = review[3]
-                comment = review[4]
-                timestamp = review[5]
-                self._reviews.append((movie_id, username, comment, int(rating), float(timestamp)))
+                review_info = {'movie_id': review[1], 'username': review[2], 'rating': int(review[3]),
+                               'comment': review[4], 'timestamp': float(review[5])}
+                self._reviews.append(review_info)

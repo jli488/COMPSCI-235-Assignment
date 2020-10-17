@@ -2,7 +2,6 @@ import tempfile
 
 import pytest
 
-from movie import populate_users
 from movie.authentication import services as auth_services
 from movie.authentication.services import AuthenticationException
 from movie.movie import services as movie_services

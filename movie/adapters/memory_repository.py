@@ -2,8 +2,7 @@ from bisect import insort_left
 from typing import List, Generator
 
 from movie.adapters.repository import AbstractRepository
-from movie.domainmodel.movie import Movie, Review
-from movie.domainmodel.user import User
+from movie.domainmodel.movie import Movie, Review, User
 from movie.utils.movie_reader import MovieFileCSVReader
 from movie.utils.review_reader import ReviewFileCSVReader
 from movie.utils.user_reader import UserFileCSVReader
@@ -152,8 +151,12 @@ def populate_users(data_path: str, repo: MemoryRepository) -> None:
 def populate_reviews(data_path: str, repo: MemoryRepository) -> None:
     reader = ReviewFileCSVReader(data_path)
     for review_fields in reader.dataset_of_reviews:
-        movie_id = review_fields[0]
-        review_args = review_fields[1:]
+        movie_id = review_fields.get('movie_id')
+        user_name = review_fields.get('username')
+        rating = review_fields.get('rating')
+        comment = review_fields.get('comment')
+        timestamp = review_fields.get('timestamp')
         movie = repo.get_movie_by_id(movie_id)
-        review = Review(movie, *review_args)
+        user = repo.get_user(user_name)
+        review = Review(movie, user, comment, rating, timestamp)
         movie.add_review(review)

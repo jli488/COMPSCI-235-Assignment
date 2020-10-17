@@ -7,8 +7,7 @@ from movie.adapters import memory_repository
 from movie.domainmodel.actor import Actor
 from movie.domainmodel.director import Director
 from movie.domainmodel.genre import Genre
-from movie.domainmodel.movie import Movie
-from movie.domainmodel.user import User
+from movie.domainmodel.movie import Movie, User
 from movie.utils.constants import USER_DATA_FILE, MOVIE_DATA_FILE, REVIEW_DATA_FILE
 
 TEST_CONFIG = {

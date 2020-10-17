@@ -1,7 +1,7 @@
 import csv
 from typing import List
 
-from movie.domainmodel.user import User
+from movie.domainmodel.movie import User
 
 
 class UserFileCSVReader(object):
