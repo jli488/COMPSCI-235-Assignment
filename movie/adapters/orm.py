@@ -36,7 +36,7 @@ directors = Table(
 
 movies = Table(
     'movies', metadata,
-    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('id', String(255), primary_key=True),
     Column('title', String(255)),
     Column('year', Integer),
     Column('description', String(255)),
@@ -45,7 +45,7 @@ movies = Table(
 
 reviews = Table(
     'reviews', metadata,
-    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('id', String(255), primary_key=True),
     Column('timestamp', Float, nullable=False),
     Column('user_id', ForeignKey('users.id')),
     Column('movie_id', ForeignKey('movies.id')),
@@ -63,6 +63,7 @@ def map_model_to_tables():
         '_review_list': relationship(Review, backref='_user')
     })
     mapper(Movie, movies, properties={
+        'id': movies.c.id,
         '_title': movies.c.title,
         '_year': movies.c.year,
         '_description': movies.c.description,
@@ -73,6 +74,7 @@ def map_model_to_tables():
         '_reviews': relationship(Review, backref='_movie')
     })
     mapper(Review, reviews, properties={
+        'id': reviews.c.id,
         '_review_text': reviews.c.comments,
         '_rating': reviews.c.rating,
         '_timestamp': reviews.c.timestamp
@@ -84,5 +86,5 @@ def map_model_to_tables():
         '_name': directors.c.full_name
     })
     mapper(Actor, actors, properties={
-        '_name': actors.c._name
+        '_name': actors.c.full_name
     })
