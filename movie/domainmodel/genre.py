@@ -2,13 +2,13 @@ class Genre:
 
     def __init__(self, genre_name: str):
         if genre_name == "" or type(genre_name) is not str:
-            self.__genre_name = None
+            self._genre_name = None
         else:
-            self.__genre_name = genre_name.strip()
+            self._genre_name = genre_name.strip()
 
     @property
     def genre_name(self) -> str:
-        return self.__genre_name
+        return self._genre_name
 
     def __repr__(self) -> str:
         return f"<Genre {self.genre_name}>"

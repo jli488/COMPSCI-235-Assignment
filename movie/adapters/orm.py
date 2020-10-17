@@ -78,7 +78,7 @@ def map_model_to_tables():
         '_timestamp': reviews.c.timestamp
     })
     mapper(Genre, genres, properties={
-        '_Genre__genre_name': genres.c.genre_name
+        '_genre_name': genres.c.genre_name
     })
     mapper(Director, directors, properties={
         '_name': directors.c.full_name
