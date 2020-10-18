@@ -36,11 +36,33 @@ directors = Table(
 
 movies = Table(
     'movies', metadata,
-    Column('id', String(255), primary_key=True),
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('movie_id', String(255)),
     Column('title', String(255)),
     Column('year', Integer),
     Column('description', String(255)),
-    Column('run_time_minutes', Integer)
+    Column('runtime_minutes', Integer)
+)
+
+movies_actors = Table(
+    'movie_actors', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('movie_id', ForeignKey('movies.id')),
+    Column('actor_id', ForeignKey('actors.id'))
+)
+
+movie_director = Table(
+    'movie_directors', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('movie_id', ForeignKey('movies.id')),
+    Column('director_id', ForeignKey('directors.id'))
+)
+
+movie_genres = Table(
+    'movie_genres', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('movie_id', ForeignKey('movies.id')),
+    Column('genre_id', ForeignKey('genres.id'))
 )
 
 reviews = Table(
@@ -59,18 +81,19 @@ def map_model_to_tables():
         '_user_name': users.c.username,
         '_password': users.c.password,
         '_time_spent_watching_movies_minutes': users.c.time_spent_watching_movies_minutes,
-        '_watched_movies': relationship(Movie),
         '_review_list': relationship(Review, backref='_user')
     })
     mapper(Movie, movies, properties={
         'id': movies.c.id,
+        '_movie_id': movies.c.movie_id,
         '_title': movies.c.title,
         '_year': movies.c.year,
         '_description': movies.c.description,
-        '_runtime_minutes': movies.c.run_time_minutes,
-        '_director': relationship(Director),
-        '_actors': relationship(Actor),
-        '_genres': relationship(Genre),
+        '_runtime_minutes': movies.c.runtime_minutes,
+        '_genres': relationship(
+            Genre,
+            secondary=movie_genres
+        ),
         '_reviews': relationship(Review, backref='_movie')
     })
     mapper(Review, reviews, properties={

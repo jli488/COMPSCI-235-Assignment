@@ -9,10 +9,10 @@ class ReviewFileCSVReader(object):
 
     @property
     def dataset_of_reviews(self) -> List[Dict]:
-        self.read_csv_file()
+        self._read_csv_file()
         return self._reviews
 
-    def read_csv_file(self):
+    def _read_csv_file(self):
         with open(self._data_path, 'r') as csv_file:
             reviews = csv.reader(csv_file, delimiter=',')
             for review in reviews:

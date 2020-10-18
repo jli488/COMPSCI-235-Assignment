@@ -131,6 +131,7 @@ class Movie:
         else:
             self._year = None
 
+        self._movie_id = str(self.title).lower().replace(" ", "_") + "_" + str(self.year)
         self._description = None
         self._director = None
         self._actors = list()
@@ -164,7 +165,11 @@ class Movie:
 
     @property
     def id(self) -> str:
-        return self.title.lower().replace(" ", "_") + "_" + str(self.year)
+        return self._movie_id
+
+    @property
+    def movie_id(self) -> str:
+        return self._movie_id
 
     @property
     def title(self) -> str:

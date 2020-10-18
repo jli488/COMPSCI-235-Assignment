@@ -11,10 +11,10 @@ class UserFileCSVReader(object):
 
     @property
     def dataset_of_users(self) -> List[User]:
-        self.read_csv_file()
+        self._read_csv_file()
         return self._users
 
-    def read_csv_file(self):
+    def _read_csv_file(self):
         with open(self._data_path, 'r') as csv_file:
             cur_users = csv.reader(csv_file, delimiter=',')
             for cur_user in cur_users:

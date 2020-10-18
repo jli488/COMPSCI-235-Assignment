@@ -10,10 +10,15 @@ from movie.domainmodel.movie import Movie
 class MovieFileCSVReader(object):
     def __init__(self, data_path):
         self._data_path = data_path
+        self._dataset_of_movie_indices = set()
         self._dataset_of_movies = set()
         self._dataset_of_actors = set()
         self._dataset_of_directors = set()
         self._dataset_of_genres = set()
+
+    @property
+    def dataset_of_movie_indices(self) -> List[int]:
+        return list(self._dataset_of_movie_indices)
 
     @property
     def dataset_of_movies(self) -> List[Movie]:
@@ -41,6 +46,7 @@ class MovieFileCSVReader(object):
         with open(self._data_path, mode='r', encoding='utf-8-sig') as f:
             records = csv.DictReader(f)
             for record in records:
+                movie_idx = int(record.get('Rank'))
                 movie = Movie(record.get('Title'), int(record.get('Year', 0)))
 
                 for actor in self._read_field(record, 'Actors', ','):
@@ -62,3 +68,4 @@ class MovieFileCSVReader(object):
                 movie.runtime_minutes = int(record.get('Runtime (Minutes)'))
 
                 self._dataset_of_movies.add(movie)
+                self._dataset_of_movie_indices.add(movie_idx)
