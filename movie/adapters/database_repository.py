@@ -1,8 +1,14 @@
 from typing import Generator, List
 
-from sqlalchemy.orm import sessionmaker
+from flask import _app_ctx_stack
+from sqlalchemy import desc
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm.exc import NoResultFound
 
 from movie.adapters.repository import AbstractRepository
+from movie.domainmodel.actor import Actor
+from movie.domainmodel.director import Director
+from movie.domainmodel.genre import Genre
 from movie.domainmodel.movie import User, Movie
 from movie.utils.movie_reader import MovieFileCSVReader
 from movie.utils.review_reader import ReviewFileCSVReader
@@ -15,68 +21,178 @@ movie_id_mapping = dict()
 user_id_mapping = dict()
 
 
+class SessionContextManager:
+    def __init__(self, session_factory):
+        self.__session_factory = session_factory
+        self.__session = scoped_session(self.__session_factory, scopefunc=_app_ctx_stack.__ident_func__)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.rollback()
+
+    @property
+    def session(self):
+        return self.__session
+
+    def commit(self):
+        self.__session.commit()
+
+    def rollback(self):
+        self.__session.rollback()
+
+    def reset_session(self):
+        self.close_current_session()
+        self.__session = scoped_session(self.__session_factory, scopefunc=_app_ctx_stack.__ident_func__)
+
+    def close_current_session(self):
+        if not self.__session is None:
+            self.__session.close()
+
+
 class SqlAlchemyRepository(AbstractRepository):
-    def __init__(self, session_factory: sessionmaker):
+    def __init__(self, session_factory):
+        self._session_cm = SessionContextManager(session_factory)
         pass
+
+    def close_session(self):
+        self._session_cm.close_current_session()
+
+    def reset_session(self):
+        self._session_cm.reset_session()
 
     @property
     def movies(self) -> Generator[Movie, None, None]:
-        pass
+        movies = None
+        try:
+            movies = self._session_cm.session.query(Movie).all()
+        except NoResultFound:
+            pass
+        return (movie for movie in movies)
 
     @property
     def users(self) -> Generator[User, None, None]:
-        pass
+        users = None
+        try:
+            users = self._session_cm.session.query(User).all()
+        except NoResultFound:
+            pass
+        return (user for user in users)
 
     @property
     def genres(self) -> Generator[str, None, None]:
-        pass
+        genres = None
+        try:
+            genres = self._session_cm.session.query(Genre).all()
+        except NoResultFound:
+            pass
+        return (genre.genre_name for genre in genres)
 
     @property
     def actors(self) -> Generator[str, None, None]:
-        pass
+        actors = None
+        try:
+            actors = self._session_cm.session.query(Actor).all()
+        except NoResultFound:
+            pass
+        return (actor.actor_full_name for actor in actors)
 
     @property
     def directors(self) -> Generator[str, None, None]:
-        pass
+        directors = None
+        try:
+            directors = self._session_cm.session.query(Director).all()
+        except NoResultFound:
+            pass
+        return (director.director_full_name for director in directors)
 
     def add_movie(self, movie: Movie) -> None:
-        pass
+        with self._session_cm as scm:
+            scm.session.add(movie)
+            scm.commit()
 
     def get_movie(self, title: str, year: int) -> Movie:
-        pass
+        movie = None
+        try:
+            movie = self._session_cm.session.query(Movie).filter(
+                ((Movie._title == title) & (Movie._year == year))).one()
+        except NoResultFound:
+            pass
+        return movie
 
     def get_movie_by_id(self, movie_id: str) -> Movie:
-        pass
+        movie = None
+        try:
+            movie = self._session_cm.session.query(Movie).filter(
+                ((Movie._movie_id == movie_id))).one()
+        except NoResultFound:
+            pass
+        return movie
 
     def get_n_movies(self, n: int, offset: int) -> List[Movie]:
-        pass
+        movies = None
+        try:
+            movies = self._session_cm.session.query(Movie).offset(offset).limit(n).all()
+        except NoResultFound:
+            pass
+        return movies
 
     def get_total_number_of_movies(self) -> int:
-        pass
+        count = self._session_cm.session.query(Movie).count()
+        return count
 
     def get_first_movie(self) -> Movie:
-        pass
+        movie = None
+        try:
+            movie = self._session_cm.session.query(Movie).first()
+        except NoResultFound:
+            pass
+        return movie
 
     def get_last_movie(self) -> Movie:
-        pass
+        movie = None
+        try:
+            movie = self._session_cm.session.query(Movie).order_by(desc(Movie.id)).first()
+        except NoResultFound:
+            pass
+        return movie
 
     def get_movies_by_actor(self, actor: str) -> Generator[Movie, None, None]:
-        pass
+        movies = self._session_cm.session.query(Movie).filter(
+            Movie._actors.any(Actor._name == actor)
+        ).all()
+        return movies
 
     def get_movies_by_director(self, director: str) -> Generator[Movie, None, None]:
-        pass
+        movies = self._session_cm.session.query(Movie).filter(
+            Movie._director.has(Director._name == director)
+        ).all()
+        return movies
 
     def get_movies_by_genre(self, genre: str) -> Generator[Movie, None, None]:
-        pass
+        movies = self._session_cm.session.query(Movie).filter(
+            Movie._genres.any(Genre._genre_name == genre)
+        ).all()
+        return movies
 
     def delete_movie(self, movie_to_delete: Movie) -> bool:
-        pass
+        with self._session_cm as scm:
+            scm.session.delete(movie_to_delete)
+            scm.commit()
 
     def add_user(self, user: User) -> None:
-        pass
+        with self._session_cm as scm:
+            scm.session.add(user)
+            scm.commit()
 
     def get_user(self, username: str) -> User:
-        pass
+        user = None
+        try:
+            user = self._session_cm.session.query(User).filter_by(_user_name=username).one()
+        except NoResultFound:
+            pass
+        return user
 
 
 def movies_generator(reader: MovieFileCSVReader):
@@ -100,14 +216,12 @@ def movies_generator(reader: MovieFileCSVReader):
             actors_records[actor_name].append(movie_idx)
 
         director_name = director.director_full_name
-        if director_name not in directors_records:
-            directors_records[director_name] = list()
-        directors_records[director_name].append(movie_idx)
+        director_idx = directors_records[director_name]
 
         # For populating review (map movie id from memory repo to database repo)
         movie_id_mapping[movie.movie_id] = movie_idx
 
-        yield movie_idx, movie.title, movie.year, movie.description, movie.runtime_minutes
+        yield movie_idx, movie.movie_id, movie.title, movie.year, movie.description, movie.runtime_minutes, director_idx
 
 
 def genre_generator():
@@ -130,13 +244,16 @@ def actor_generator():
     return records
 
 
-def director_generator():
+def director_generator(reader: MovieFileCSVReader):
     records = list()
     director_key = 0
+    for movie in reader.dataset_of_movies:
+        director_key += 1
+        director_name = movie.director.director_full_name
+        directors_records[director_name] = director_key
 
-    for director in directors_records.keys():
-        director_key = director_key + 1
-        records.append((director_key, director))
+    for director_name, director_key in directors_records.items():
+        records.append((director_key, director_name))
     return records
 
 
@@ -160,17 +277,6 @@ def movie_actors_generator():
         for movie_key in actors_records[actor]:
             movie_actor_key = movie_actor_key + 1
             yield movie_actor_key, movie_key, actor_key
-
-
-def movie_directors_generator():
-    movie_director_key = 0
-    director_key = 0
-
-    for director in directors_records.keys():
-        director_key = director_key + 1
-        for movie_key in directors_records[director]:
-            movie_director_key = movie_director_key + 1
-            yield movie_director_key, movie_key, director_key
 
 
 def user_generator(reader: UserFileCSVReader):
@@ -209,8 +315,15 @@ def populate_movies(database_engine, movie_data_path):
     conn = database_engine.raw_connection()
     cursor = conn.cursor()
 
-    insert_movies = """INSERT INTO movies (id, title, year, description, runtime_minutes) VALUES (?, ?, ?, ?, ?)"""
+    insert_directors = """INSERT INTO directors (id, full_name) VALUES (?, ?)"""
+    cursor.executemany(insert_directors, director_generator(reader))
+
+    insert_movies = """INSERT INTO movies (id, movie_id, title, year, description, runtime_minutes, director_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?)"""
     cursor.executemany(insert_movies, movies_generator(reader))
+
+    insert_actors = """INSERT INTO actors (id, full_name) VALUES (?, ?)"""
+    cursor.executemany(insert_actors, actor_generator())
 
     insert_genres = """INSERT INTO genres (id, genre_name) VALUES (?, ?)"""
     cursor.executemany(insert_genres, genre_generator())
@@ -218,17 +331,8 @@ def populate_movies(database_engine, movie_data_path):
     insert_movie_genres = """INSERT INTO movie_genres (id, movie_id, genre_id) VALUES (?, ?, ?)"""
     cursor.executemany(insert_movie_genres, movie_genres_generator())
 
-    insert_actors = """INSERT INTO actors (id, full_name) VALUES (?, ?)"""
-    cursor.executemany(insert_actors, actor_generator())
-
     insert_movie_actors = """INSERT INTO movie_actors (id, movie_id, actor_id) VALUES (?, ?, ?)"""
     cursor.executemany(insert_movie_actors, movie_actors_generator())
-
-    insert_directors = """INSERT INTO directors (id, full_name) VALUES (?, ?)"""
-    cursor.executemany(insert_directors, director_generator())
-
-    insert_movie_directors = """INSERT INTO movie_directors (id, movie_id, director_id) VALUES (?, ?, ?)"""
-    cursor.executemany(insert_movie_directors, movie_directors_generator())
 
     conn.commit()
     conn.close()

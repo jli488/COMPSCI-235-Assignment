@@ -37,10 +37,12 @@ directors = Table(
 movies = Table(
     'movies', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('movie_id', String(255), index=True, unique=True),
     Column('title', String(255)),
     Column('year', Integer),
     Column('description', String(255)),
-    Column('runtime_minutes', Integer)
+    Column('runtime_minutes', Integer),
+    Column('director_id', Integer, ForeignKey('directors.id'))
 )
 
 movies_actors = Table(
@@ -48,13 +50,6 @@ movies_actors = Table(
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('movie_id', ForeignKey('movies.id')),
     Column('actor_id', ForeignKey('actors.id'))
-)
-
-movie_director = Table(
-    'movie_directors', metadata,
-    Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('movie_id', ForeignKey('movies.id')),
-    Column('director_id', ForeignKey('directors.id'))
 )
 
 movie_genres = Table(
@@ -84,13 +79,19 @@ def map_model_to_tables():
     })
     mapper(Movie, movies, properties={
         'id': movies.c.id,
+        '_movie_id': movies.c.movie_id,
         '_title': movies.c.title,
         '_year': movies.c.year,
         '_description': movies.c.description,
         '_runtime_minutes': movies.c.runtime_minutes,
+        '_director': relationship(Director),
         '_genres': relationship(
             Genre,
             secondary=movie_genres
+        ),
+        '_actors': relationship(
+            Actor,
+            secondary=movies_actors
         ),
         '_reviews': relationship(Review, backref='_movie')
     })
