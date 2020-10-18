@@ -40,7 +40,7 @@ def create_app(test_config: dict = None):
                                         connect_args={"check_same_thread": False},
                                         poolclass=NullPool,
                                         echo=database_echo)
-        if app.config['TESTING'].lower() == 'true' or len(database_engine.table_names()) == 0:
+        if str(app.config['TESTING']).lower() == 'true' or len(database_engine.table_names()) == 0:
             print("REPOPULATING DATABASE")
             clear_mappers()
             metadata.create_all(database_engine)
