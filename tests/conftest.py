@@ -78,6 +78,12 @@ def client():
     return my_app.test_client()
 
 
+@pytest.fixture
+def app():
+    my_app = create_app(TEST_CONFIG)
+    return my_app
+
+
 class AuthenticationManager:
     def __init__(self, client):
         self._client = client

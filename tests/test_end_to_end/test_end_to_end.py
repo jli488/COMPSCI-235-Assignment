@@ -48,38 +48,41 @@ class SimpleDeleteHrefParser(HTMLParser):
                         self.delete_url = element
 
 
-def test_review(client, auth):
+def test_review(client, auth, app):
     # Test add review
     auth.login()
     response = client.get('/review?movie_title=Guardians+of+the+Galaxy&movie_id=guardians_of_the_galaxy_2014')
     assert response.status_code == 200
     assert b'Guardians of the Galaxy' in response.data
 
+    movie_id = 'guardians_of_the_galaxy_2014'
+    if app.config['REPOSITORY'] == 'database':
+        movie_id = '1'
+
     response = client.post(
-        '/review?movie_id=guardians_of_the_galaxy_2014',
+        f'/review?movie_id={movie_id}',
         data={
             'rating': 4,
             'review_text': 'This is a test review'
         }
     )
-    assert response.headers['Location'] == 'http://localhost/movie_info?movie_id=guardians_of_the_galaxy_2014'
+    assert response.headers['Location'] == f'http://localhost/movie_info?movie_id={movie_id}'
 
     # Test if review can be retrieved
-    response = client.get('/movie_info?movie_id=guardians_of_the_galaxy_2014')
+    response = client.get(f'/movie_info?movie_id={movie_id}')
     assert response.status_code == 200
     assert b'This is a test review' in response.data
 
     # Test delete review
-    response = client.get('/movie_info?movie_id=guardians_of_the_galaxy_2014')
+    response = client.get(f'/movie_info?movie_id={movie_id}')
     assert b'delete' in response.data
     parser = SimpleDeleteHrefParser()
     parser.feed(str(response.data))
     response = client.get(parser.delete_url)
-    review_id = parser.delete_url.split('review_id=')[-1]
     assert response.status_code == 302
 
-    response = client.get('/movie_info?movie_id=guardians_of_the_galaxy_2014')
-    assert bytes(review_id, 'utf-8') not in response.data
+    response = client.get(f'/movie_info?movie_id={movie_id}')
+    assert b'This is a test review' not in response.data
 
 
 @pytest.mark.parametrize(
