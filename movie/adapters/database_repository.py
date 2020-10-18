@@ -1,6 +1,9 @@
+from typing import Generator, List
+
 from sqlalchemy.orm import sessionmaker
 
 from movie.adapters.repository import AbstractRepository
+from movie.domainmodel.movie import User, Movie
 from movie.utils.movie_reader import MovieFileCSVReader
 from movie.utils.review_reader import ReviewFileCSVReader
 from movie.utils.user_reader import UserFileCSVReader
@@ -16,10 +19,70 @@ class SqlAlchemyRepository(AbstractRepository):
     def __init__(self, session_factory: sessionmaker):
         pass
 
+    @property
+    def movies(self) -> Generator[Movie, None, None]:
+        pass
+
+    @property
+    def users(self) -> Generator[User, None, None]:
+        pass
+
+    @property
+    def genres(self) -> Generator[str, None, None]:
+        pass
+
+    @property
+    def actors(self) -> Generator[str, None, None]:
+        pass
+
+    @property
+    def directors(self) -> Generator[str, None, None]:
+        pass
+
+    def add_movie(self, movie: Movie) -> None:
+        pass
+
+    def get_movie(self, title: str, year: int) -> Movie:
+        pass
+
+    def get_movie_by_id(self, movie_id: str) -> Movie:
+        pass
+
+    def get_n_movies(self, n: int, offset: int) -> List[Movie]:
+        pass
+
+    def get_total_number_of_movies(self) -> int:
+        pass
+
+    def get_first_movie(self) -> Movie:
+        pass
+
+    def get_last_movie(self) -> Movie:
+        pass
+
+    def get_movies_by_actor(self, actor: str) -> Generator[Movie, None, None]:
+        pass
+
+    def get_movies_by_director(self, director: str) -> Generator[Movie, None, None]:
+        pass
+
+    def get_movies_by_genre(self, genre: str) -> Generator[Movie, None, None]:
+        pass
+
+    def delete_movie(self, movie_to_delete: Movie) -> bool:
+        pass
+
+    def add_user(self, user: User) -> None:
+        pass
+
+    def get_user(self, username: str) -> User:
+        pass
+
 
 def movies_generator(reader: MovieFileCSVReader):
-    for idx, movie in zip(reader.dataset_of_movie_indices,
-                          reader.dataset_of_movies):
+    movie_idx = 0
+    for movie in reader.dataset_of_movies:
+        movie_idx = movie_idx + 1
         genres = movie.genres
         actors = movie.actors
         director = movie.director
@@ -28,23 +91,23 @@ def movies_generator(reader: MovieFileCSVReader):
             genre_name = genre.genre_name
             if genre_name not in genres_records:
                 genres_records[genre_name] = list()
-            genres_records[genre_name].append(idx)
+            genres_records[genre_name].append(movie_idx)
 
         for actor in actors:
             actor_name = actor.actor_full_name
             if actor_name not in actors_records:
                 actors_records[actor_name] = list()
-            actors_records[actor_name].append(idx)
+            actors_records[actor_name].append(movie_idx)
 
         director_name = director.director_full_name
         if director_name not in directors_records:
             directors_records[director_name] = list()
-        directors_records[director_name].append(idx)
+        directors_records[director_name].append(movie_idx)
 
         # For populating review (map movie id from memory repo to database repo)
-        movie_id_mapping[movie.movie_id] = idx
+        movie_id_mapping[movie.movie_id] = movie_idx
 
-        yield idx, movie.title, movie.year, movie.description, movie.runtime_minutes
+        yield movie_idx, movie.title, movie.year, movie.description, movie.runtime_minutes
 
 
 def genre_generator():
@@ -111,13 +174,11 @@ def movie_directors_generator():
 
 
 def user_generator(reader: UserFileCSVReader):
-    records = list()
     user_idx = 0
     for user in reader.dataset_of_users:
         user_idx += 1
         user_id_mapping[user.username] = user_idx
-        records.append((user_idx, user.username, user.password, user.time_spent_watching_movies_minutes))
-    return records
+        yield user_idx, user.username, user.password, user.time_spent_watching_movies_minutes
 
 
 def review_generator(reader: ReviewFileCSVReader):

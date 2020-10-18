@@ -37,7 +37,6 @@ directors = Table(
 movies = Table(
     'movies', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('movie_id', String(255)),
     Column('title', String(255)),
     Column('year', Integer),
     Column('description', String(255)),
@@ -85,7 +84,6 @@ def map_model_to_tables():
     })
     mapper(Movie, movies, properties={
         'id': movies.c.id,
-        '_movie_id': movies.c.movie_id,
         '_title': movies.c.title,
         '_year': movies.c.year,
         '_description': movies.c.description,
