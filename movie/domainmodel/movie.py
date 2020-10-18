@@ -82,9 +82,11 @@ class Review:
         else:
             self._rating = None
 
+        self._review_id = str(self.movie.id) + self.username + str(self.timestamp)
+
     @property
     def id(self) -> str:
-        return self.movie.id + self.username + str(self.timestamp)
+        return self._review_id
 
     @property
     def movie(self) -> 'Movie':

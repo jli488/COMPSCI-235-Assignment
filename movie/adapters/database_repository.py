@@ -9,7 +9,7 @@ from movie.adapters.repository import AbstractRepository
 from movie.domainmodel.actor import Actor
 from movie.domainmodel.director import Director
 from movie.domainmodel.genre import Genre
-from movie.domainmodel.movie import User, Movie
+from movie.domainmodel.movie import User, Movie, Review
 from movie.utils.movie_reader import MovieFileCSVReader
 from movie.utils.review_reader import ReviewFileCSVReader
 from movie.utils.user_reader import UserFileCSVReader
@@ -125,7 +125,7 @@ class SqlAlchemyRepository(AbstractRepository):
         movie = None
         try:
             movie = self._session_cm.session.query(Movie).filter(
-                ((Movie._movie_id == movie_id))).one()
+                ((Movie.id == int(movie_id)))).one()
         except NoResultFound:
             pass
         return movie
@@ -193,6 +193,22 @@ class SqlAlchemyRepository(AbstractRepository):
         except NoResultFound:
             pass
         return user
+
+    def add_review(self, review: Review):
+        with self._session_cm as scm:
+            scm.session.add(review)
+            scm.commit()
+
+    def remove_review(self, movie: Movie, review_id: str):
+        with self._session_cm as scm:
+            try:
+                reviews = scm.session.query(Review).filter_by(id=review_id).all()
+                if reviews:
+                    for review in reviews:
+                        scm.session.delete(review)
+                scm.commit()
+            except NoResultFound:
+                pass
 
 
 def movies_generator(reader: MovieFileCSVReader):

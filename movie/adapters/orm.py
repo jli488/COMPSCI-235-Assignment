@@ -61,7 +61,7 @@ movie_genres = Table(
 
 reviews = Table(
     'reviews', metadata,
-    Column('id', String(255), primary_key=True),
+    Column('id', Integer, primary_key=True, autoincrement=True),
     Column('timestamp', Float, nullable=False),
     Column('user_id', ForeignKey('users.id')),
     Column('movie_id', ForeignKey('movies.id')),

@@ -25,7 +25,7 @@ def add_user(username: str, password: str, repo: AbstractRepository):
     password_hash = generate_password_hash(password)
     new_user = User(username, password_hash)
     repo.add_user(new_user)
-    if has_app_context():
+    if has_app_context() and (current_app.config['REPOSITORY'] == 'memory'):
         _save_users_to_disk(current_app.config['USER_DATA_PATH'], repo)
 
 

@@ -1,7 +1,7 @@
 import abc
 from typing import List, Generator
 
-from movie.domainmodel.movie import Movie, User
+from movie.domainmodel.movie import Movie, User, Review
 
 repo_instance: 'AbstractRepository' = None
 
@@ -105,4 +105,14 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def get_user(self, username: str) -> User:
         """ Get existing user from the repo """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_review(self, review: Review):
+        """ Add review """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def remove_review(self, movie: Movie, review_id: str):
+        """ remove review from movie """
         raise NotImplementedError
