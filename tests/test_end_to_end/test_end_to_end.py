@@ -116,7 +116,7 @@ def test_login_with_invalid_input(client, username, password, message):
 
 
 def test_page_404(client):
-    response = client.get('/movie_info?movie_id=notexist202')
+    response = client.get('/movie_info?movie_id=-1')
     assert b'The page doesn\'t exist' in response.data
 
 

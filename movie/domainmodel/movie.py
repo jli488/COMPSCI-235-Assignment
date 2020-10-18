@@ -274,9 +274,12 @@ class Movie:
                 self._reviews.remove(review_to_remove)
 
     def remove_review_by_id(self, review_id: str):
+        reviews_to_remove = []
         for review_to_remove in self._reviews:
-            if review_to_remove.id == review_id:
-                self._reviews.remove(review_to_remove)
+            if review_to_remove._review_id == review_id:
+                reviews_to_remove.append(review_to_remove)
+        for review_to_remove in reviews_to_remove:
+            self._reviews.remove(review_to_remove)
 
     def set_director(self, director: Director):
         self._director = director

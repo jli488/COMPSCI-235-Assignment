@@ -55,13 +55,13 @@ class MemoryRepository(AbstractRepository):
         return True
 
     def _update_movie_index(self, movie: Movie):
-        self._movies_index[movie.id] = movie
+        self._movies_index[movie.movie_id] = movie
 
     def _update_actor_index(self, movie: Movie):
         if movie.actors:
             for actor in movie.actors:
                 movie_ids = self._actors_index.get(actor.actor_full_name, [])
-                movie_ids.append(movie.id)
+                movie_ids.append(movie.movie_id)
                 self._actors_index.update({
                     actor.actor_full_name: movie_ids
                 })
@@ -69,7 +69,7 @@ class MemoryRepository(AbstractRepository):
     def _update_director_index(self, movie: Movie):
         if movie.director:
             movie_ids = self._directors_index.get(movie.director.director_full_name, [])
-            movie_ids.append(movie.id)
+            movie_ids.append(movie.movie_id)
             self._directors_index.update({
                 movie.director.director_full_name: movie_ids
             })
@@ -78,7 +78,7 @@ class MemoryRepository(AbstractRepository):
         if movie.genres:
             for genre in movie.genres:
                 movie_ids = self._genres_index.get(genre.genre_name, [])
-                movie_ids.append(movie.id)
+                movie_ids.append(movie.movie_id)
                 self._genres_index.update({
                     genre.genre_name: movie_ids
                 })

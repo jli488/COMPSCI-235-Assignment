@@ -75,7 +75,7 @@ def test_delete_not_exist_movie(memory_repo):
 def test_get_movie_by_id(memory_repo):
     movie = Movie('Test Movie', 2020)
     memory_repo.add_movie(movie)
-    movie_id = movie.id
+    movie_id = movie.movie_id
     assert memory_repo.get_movie_by_id(movie_id) is movie
 
 
