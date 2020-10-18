@@ -66,7 +66,7 @@ class SqlAlchemyRepository(AbstractRepository):
     def movies(self) -> Generator[Movie, None, None]:
         movies = None
         try:
-            movies = self._session_cm.session.query(Movie).all()
+            movies = self._session_cm.session.query(Movie).order_by(Movie._title).all()
         except NoResultFound:
             pass
         return (movie for movie in movies)
@@ -133,7 +133,11 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_n_movies(self, n: int, offset: int) -> List[Movie]:
         movies = None
         try:
-            movies = self._session_cm.session.query(Movie).offset(offset).limit(n).all()
+            movies = self._session_cm.session\
+                .query(Movie)\
+                .order_by(Movie._title)\
+                .offset(offset)\
+                .limit(n).all()
         except NoResultFound:
             pass
         return movies
@@ -145,7 +149,10 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_first_movie(self) -> Movie:
         movie = None
         try:
-            movie = self._session_cm.session.query(Movie).first()
+            movie = self._session_cm.session\
+                .query(Movie)\
+                .order_by(Movie._title)\
+                .first()
         except NoResultFound:
             pass
         return movie
@@ -153,7 +160,10 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_last_movie(self) -> Movie:
         movie = None
         try:
-            movie = self._session_cm.session.query(Movie).order_by(desc(Movie.id)).first()
+            movie = self._session_cm.session\
+                .query(Movie)\
+                .order_by(desc(Movie._title))\
+                .first()
         except NoResultFound:
             pass
         return movie
@@ -161,19 +171,19 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_movies_by_actor(self, actor: str) -> Generator[Movie, None, None]:
         movies = self._session_cm.session.query(Movie).filter(
             Movie._actors.any(Actor._name == actor)
-        ).all()
+        ).order_by(Movie._title).all()
         return movies
 
     def get_movies_by_director(self, director: str) -> Generator[Movie, None, None]:
         movies = self._session_cm.session.query(Movie).filter(
             Movie._director.has(Director._name == director)
-        ).all()
+        ).order_by(Movie._title).all()
         return movies
 
     def get_movies_by_genre(self, genre: str) -> Generator[Movie, None, None]:
         movies = self._session_cm.session.query(Movie).filter(
             Movie._genres.any(Genre._genre_name == genre)
-        ).all()
+        ).order_by(Movie._title).all()
         return movies
 
     def delete_movie(self, movie_to_delete: Movie) -> bool:
