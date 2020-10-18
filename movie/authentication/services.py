@@ -1,6 +1,3 @@
-import csv
-
-from flask import current_app, has_app_context
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from movie.adapters.repository import AbstractRepository
@@ -25,15 +22,6 @@ def add_user(username: str, password: str, repo: AbstractRepository):
     password_hash = generate_password_hash(password)
     new_user = User(username, password_hash)
     repo.add_user(new_user)
-    if has_app_context() and (current_app.config['REPOSITORY'] == 'memory'):
-        _save_users_to_disk(current_app.config['USER_DATA_PATH'], repo)
-
-
-def _save_users_to_disk(data_path: str, repo: AbstractRepository) -> None:
-    with open(data_path, 'w', newline='') as f:
-        user_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        for user in repo.users:
-            user_writer.writerow([user.username, user.password])
 
 
 def get_user(username: str, repo: AbstractRepository) -> dict:

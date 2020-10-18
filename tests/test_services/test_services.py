@@ -39,7 +39,7 @@ def test_can_save_user(memory_repo):
     auth_services.add_user(username, password, memory_repo)
 
     tmp_file = tempfile.NamedTemporaryFile(delete=False)
-    auth_services._save_users_to_disk(tmp_file.name, memory_repo)
+    memory_repo._save_users_to_disk(tmp_file.name)
 
     with open(tmp_file.name, 'r') as f:
         file_content = ''.join(f.readlines())
