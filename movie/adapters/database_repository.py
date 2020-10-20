@@ -172,19 +172,19 @@ class SqlAlchemyRepository(AbstractRepository):
         movies = self._session_cm.session.query(Movie).filter(
             Movie._actors.any(Actor._name == actor)
         ).order_by(Movie._title).all()
-        return movies
+        return (i for i in movies)
 
     def get_movies_by_director(self, director: str) -> Generator[Movie, None, None]:
         movies = self._session_cm.session.query(Movie).filter(
             Movie._director.has(Director._name == director)
         ).order_by(Movie._title).all()
-        return movies
+        return (i for i in movies)
 
     def get_movies_by_genre(self, genre: str) -> Generator[Movie, None, None]:
         movies = self._session_cm.session.query(Movie).filter(
             Movie._genres.any(Genre._genre_name == genre)
         ).order_by(Movie._title).all()
-        return movies
+        return (i for i in movies)
 
     def delete_movie(self, movie_to_delete: Movie) -> bool:
         with self._session_cm as scm:
