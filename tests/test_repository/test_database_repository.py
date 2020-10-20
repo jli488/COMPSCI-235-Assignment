@@ -112,12 +112,3 @@ def test_get_movie_by_director(session_factory):
     movies = list(repo.get_movies_by_director(director))
     titles = [m.title for m in movies]
     assert 'Guardians of the Galaxy' in titles
-
-
-def test_can_delete_movies(session_factory):
-    repo = SqlAlchemyRepository(session_factory)
-    movie = repo.get_movie('Guardians of the Galaxy', 2014)
-    assert repo.delete_movie(movie)
-    movie = repo.get_movie('Guardians of the Galaxy', 2014)
-    assert movie is None
-
