@@ -92,7 +92,7 @@ def test_can_remove_review(memory_repo):
     review_id = None
     for review in reviews:
         if review.username == username and review.review_text == review_text:
-            review_id = review._review_id
+            review_id = review.review_id
     review_services.remove_review(review_id, movie_id, memory_repo)
     movie_dict = movie_services.fetch_movie_info_by_id(movie_id, memory_repo)
     assert next(

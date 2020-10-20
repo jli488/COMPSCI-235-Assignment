@@ -84,7 +84,7 @@ def fetch_movie_info_by_id(movie_id: str, repo: AbstractRepository):
         movie_info['movie_reviews'] = [{'rating': review.rating,
                                         'comment': review.review_text,
                                         'username': review.username,
-                                        'id': review.id}
+                                        'id': review.review_id}
                                        for review in movie.reviews]
 
     return movie_info

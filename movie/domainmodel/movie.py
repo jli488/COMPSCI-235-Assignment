@@ -82,10 +82,10 @@ class Review:
         else:
             self._rating = None
 
-        self._review_id = str(self.movie.id) + self.username + str(self.timestamp)
+        self._review_id = str(self._movie.movie_id) + self._user.username + str(self._timestamp)
 
     @property
-    def id(self) -> str:
+    def review_id(self) -> str:
         return self._review_id
 
     @property
@@ -164,10 +164,6 @@ class Movie:
 
     def __hash__(self) -> int:
         return hash((self.title, self.year))
-
-    @property
-    def id(self) -> str:
-        return self._movie_id
 
     @property
     def movie_id(self) -> str:
@@ -276,7 +272,7 @@ class Movie:
     def remove_review_by_id(self, review_id: str):
         reviews_to_remove = []
         for review_to_remove in self._reviews:
-            if review_to_remove._review_id == review_id:
+            if review_to_remove.review_id == review_id:
                 reviews_to_remove.append(review_to_remove)
         for review_to_remove in reviews_to_remove:
             self._reviews.remove(review_to_remove)

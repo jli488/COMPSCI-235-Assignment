@@ -17,5 +17,5 @@ class ReviewFileCSVReader(object):
             reviews = csv.reader(csv_file, delimiter=',')
             for review in reviews:
                 review_info = {'movie_id': review[1], 'username': review[2], 'rating': int(review[3]),
-                               'comment': review[4], 'timestamp': float(review[5])}
+                               'comment': review[4], 'timestamp': float(review[5]), 'review_id': review[0]}
                 self._reviews.append(review_info)

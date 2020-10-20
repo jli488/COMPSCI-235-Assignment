@@ -212,7 +212,7 @@ class SqlAlchemyRepository(AbstractRepository):
     def remove_review(self, movie: Movie, review_id: str):
         with self._session_cm as scm:
             try:
-                reviews = scm.session.query(Review).filter_by(id=review_id).all()
+                reviews = scm.session.query(Review).filter_by(_review_id=review_id).all()
                 if reviews:
                     for review in reviews:
                         scm.session.delete(review)
@@ -322,11 +322,12 @@ def review_generator(reader: ReviewFileCSVReader):
         rating = review_fields.get('rating')
         comment = review_fields.get('comment')
         timestamp = review_fields.get('timestamp')
+        review_id = review_fields.get('review_id')
 
         mapped_user_id = user_id_mapping[user_name]
         mapped_movie_id = movie_id_mapping[movie_id]
 
-        yield review_idx, timestamp, mapped_user_id, mapped_movie_id, comment, rating
+        yield review_idx, review_id, timestamp, mapped_user_id, mapped_movie_id, comment, rating
 
 
 def populate_movies(database_engine, movie_data_path):
@@ -389,7 +390,7 @@ def populate_reviews(database_engine, reviews_data_path):
     conn = database_engine.raw_connection()
     cursor = conn.cursor()
 
-    insert_reviews = """INSERT INTO reviews (id, timestamp, user_id, movie_id, comments, rating) VALUES (?, ?, ?, ?, ?, ?)"""
+    insert_reviews = """INSERT INTO reviews (id, review_id, timestamp, user_id, movie_id, comments, rating) VALUES (?, ?, ?, ?, ?, ?, ?)"""
     cursor.executemany(insert_reviews, review_generator(reader))
 
     conn.commit()

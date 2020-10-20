@@ -62,6 +62,7 @@ movie_genres = Table(
 reviews = Table(
     'reviews', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('review_id', String(255), index=True, unique=True),
     Column('timestamp', Float, nullable=False),
     Column('user_id', ForeignKey('users.id')),
     Column('movie_id', ForeignKey('movies.id')),
@@ -78,7 +79,6 @@ def map_model_to_tables():
         '_review_list': relationship(Review, backref='_user')
     })
     mapper(Movie, movies, properties={
-        'id': movies.c.id,
         '_movie_id': movies.c.movie_id,
         '_title': movies.c.title,
         '_year': movies.c.year,
@@ -96,7 +96,7 @@ def map_model_to_tables():
         '_reviews': relationship(Review, backref='_movie')
     })
     mapper(Review, reviews, properties={
-        'id': reviews.c.id,
+        '_review_id': reviews.c.review_id,
         '_review_text': reviews.c.comments,
         '_rating': reviews.c.rating,
         '_timestamp': reviews.c.timestamp

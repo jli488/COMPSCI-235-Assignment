@@ -165,7 +165,7 @@ class MemoryRepository(AbstractRepository):
     def _save_reviews_to_disk(data_path: str, review: Review) -> None:
         with open(data_path, 'a', newline='') as f:
             review_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            review_writer.writerow([review.id, review.movie.id,
+            review_writer.writerow([review.review_id, review.movie.movie_id,
                                     review.username, review.rating,
                                     review.review_text, review.timestamp])
 

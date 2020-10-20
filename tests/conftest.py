@@ -1,9 +1,11 @@
 import os
 
 import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import clear_mappers, sessionmaker
 
-from movie import create_app
-from movie.adapters import memory_repository
+from movie import create_app, metadata, map_model_to_tables
+from movie.adapters import memory_repository, database_repository
 from movie.domainmodel.actor import Actor
 from movie.domainmodel.director import Director
 from movie.domainmodel.genre import Genre
@@ -17,6 +19,9 @@ TEST_CONFIG = {
     'TEST_USERS_DATA_PATH': os.path.join('tests', 'datafiles', USER_DATA_FILE),
     'WTF_CSRF_ENABLED': False
 }
+
+TEST_DATABASE_URI_IN_MEMORY = 'sqlite://'
+TEST_DATABASE_URI_FILE = 'sqlite:///movie.db'
 
 
 @pytest.fixture
@@ -102,3 +107,66 @@ class AuthenticationManager:
 @pytest.fixture
 def auth(client):
     return AuthenticationManager(client)
+
+
+@pytest.fixture
+def database_engine():
+    engine = create_engine(TEST_DATABASE_URI_FILE)
+    clear_mappers()
+    metadata.create_all(engine)  # Conditionally create database tables.
+    for table in reversed(metadata.sorted_tables):  # Remove any data from the tables.
+        engine.execute(table.delete())
+    map_model_to_tables()
+    database_repository.populate_movies(engine, TEST_CONFIG['TEST_MOVIE_DATA_PATH'])
+    database_repository.populate_users(engine, TEST_CONFIG['TEST_USERS_DATA_PATH'])
+    database_repository.populate_reviews(engine, TEST_CONFIG['TEST_REVIEWS_DATA_PATH'])
+    yield engine
+    metadata.drop_all(engine)
+    clear_mappers()
+
+
+@pytest.fixture
+def empty_session():
+    engine = create_engine(TEST_DATABASE_URI_IN_MEMORY)
+    metadata.create_all(engine)
+    for table in reversed(metadata.sorted_tables):
+        engine.execute(table.delete())
+    map_model_to_tables()
+    session_factory = sessionmaker(bind=engine)
+    yield session_factory()
+    metadata.drop_all(engine)
+    clear_mappers()
+
+
+@pytest.fixture
+def session():
+    clear_mappers()
+    engine = create_engine(TEST_DATABASE_URI_IN_MEMORY)
+    metadata.create_all(engine)
+    for table in reversed(metadata.sorted_tables):
+        engine.execute(table.delete())
+    map_model_to_tables()
+    session_factory = sessionmaker(bind=engine)
+    database_repository.populate_movies(engine, TEST_CONFIG['TEST_MOVIE_DATA_PATH'])
+    database_repository.populate_users(engine, TEST_CONFIG['TEST_USERS_DATA_PATH'])
+    database_repository.populate_reviews(engine, TEST_CONFIG['TEST_REVIEWS_DATA_PATH'])
+    yield session_factory()
+    metadata.drop_all(engine)
+    clear_mappers()
+
+
+@pytest.fixture
+def session_factory():
+    clear_mappers()
+    engine = create_engine(TEST_DATABASE_URI_IN_MEMORY)
+    metadata.create_all(engine)
+    for table in reversed(metadata.sorted_tables):
+        engine.execute(table.delete())
+    map_model_to_tables()
+    session_factory = sessionmaker(bind=engine)
+    database_repository.populate_movies(engine, TEST_CONFIG['TEST_MOVIE_DATA_PATH'])
+    database_repository.populate_users(engine, TEST_CONFIG['TEST_USERS_DATA_PATH'])
+    database_repository.populate_reviews(engine, TEST_CONFIG['TEST_REVIEWS_DATA_PATH'])
+    yield session_factory
+    metadata.drop_all(engine)
+    clear_mappers()
