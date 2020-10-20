@@ -56,9 +56,6 @@ def test_review(client, auth, app):
     assert b'Guardians of the Galaxy' in response.data
 
     movie_id = 'guardians_of_the_galaxy_2014'
-    if app.config['REPOSITORY'] == 'database':
-        movie_id = '1'
-
     response = client.post(
         f'/review?movie_id={movie_id}',
         data={

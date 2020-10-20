@@ -125,7 +125,7 @@ class SqlAlchemyRepository(AbstractRepository):
         movie = None
         try:
             movie = self._session_cm.session.query(Movie).filter(
-                ((Movie.id == int(movie_id)))).one()
+                ((Movie._movie_id == movie_id))).one()
         except NoResultFound:
             pass
         return movie
